@@ -6,9 +6,9 @@ const categorySchema = new Schema({
         required:true
     },
     slug:{type:String,required:true},
-    img:{
+    image:{
         type:Object,
-        required:false
+        required:true
     },
     createdBy:{
         type:Types.ObjectId,

@@ -40,21 +40,16 @@
 
 
 
+
 import multer from 'multer'
 export const fileValidation = {
-    image: ['image/jpg', 'image/png', 'image/jpeg','image/gif'],
-    file: ['application/pdf', 'application/msword'],
-    video: ['video/mp4']
+    image: ["image/png", "image/jpg", "image/jpeg", "image/gif"]
 }
-export function fileUpload(customValidation=[]) {
+
+export function cloudUpload() {
     const storage = multer.diskStorage({})
-    function fileFilter(req, file, cb) {
-        if (customValidation.includes(file.mimetype)) {
-            cb(null, true)
-        } else {
-            cb('In-valid file format', false)
-        }
-    }
-    const upload = multer({ fileFilter, storage })
-    return upload
+
+
+    const upload = multer({storage})
+    return upload ; 
 }

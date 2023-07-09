@@ -4,14 +4,19 @@ import slugify from 'slugify';
 export const createCategory = async(req,res,next)=>{
 try {
     const {name} = req.body;
-    console.log({name});
-// const {secureUrl,puplicId} = await cloudinary.uploader.upload(req.file.path,{folder:`${process.env.APP_NAME}/category`})
-const category = await categoryModel.create({name,slug:slugify(name,'-')}
-)
+const {public_id,secure_url} = await cloudinary.uploader.upload(req.file.path,{folder:`${process.env.APP_NAME}/category`})
+
+const category = await categoryModel.create({
+    name,
+    slug:slugify(name,'-'),
+    image:{public_id,secure_url}
+})
+await category.save();
+
 return res.status(201).json({message:'done',category})
     
 } catch (error) {
-return res.json({error})
+return res.json({message:error.message})
     
 }
 
