@@ -11,7 +11,7 @@ router.get('/', (req ,res)=>{
     res.status(200).json({message:"Category Module"})
 })
 
-router.post('/create',validation(validators.createCategory),cloudUpload().single('image'),
+router.post('/create',cloudUpload().single('image'),validation(validators.createCategory),
 categoryController.createCategory)
 
 
