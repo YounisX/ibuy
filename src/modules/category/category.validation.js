@@ -5,3 +5,11 @@ export const createCategory = joi.object({
     file:generalFields.file.required()
 }
 ).required();
+
+export const updateCategory = joi.object({
+    categoryId:generalFields.id,
+    name:joi.string().min(3).max(26),
+    file:generalFields.file
+}
+).required();
+

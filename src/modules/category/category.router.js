@@ -14,7 +14,11 @@ router.get('/', (req ,res)=>{
 router.post('/create',cloudUpload().single('image'),validation(validators.createCategory),
 categoryController.createCategory)
 
-
+router.put('./categoryId',
+cloudUpload().single('image'),
+validation(validators.updateCategory),
+categoryController.updateCategory
+)
 
 
 export default router

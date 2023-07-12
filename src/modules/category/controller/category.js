@@ -20,3 +20,9 @@ const category = await categoryModel.create({
 return res.status(201).json({message:'done',category})
 }  
 )
+
+export const updateCategory = (req,res,next)=>{
+    const {name} = req.body;
+    console.log(name);
+
+}
