@@ -30,5 +30,11 @@ export const updateCategory = AsyncHandler(async (req, res, next) => {
   }
  category.name = req.body.name;
  category.slug = slugify(req.body.name,'-')
+ if(req.file){
+   await cloudinary.uploader.destroy(category.image.public_id)
+   req.file.body={ public_id, secure_url }
+ }
+ await category.save();
+
  return res.json({category})
 });

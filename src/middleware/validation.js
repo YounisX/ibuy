@@ -2,8 +2,7 @@ import joi from 'joi'
 import { Schema, Types } from 'mongoose'
 
 const validateObjectId = (value, helper) => {
-    console.log({ value });
-    console.log(helper);
+  
     return Types.ObjectId.isValid(value) ? true : helper.message('In-valid objectId')
 }
 export const generalFields = {
