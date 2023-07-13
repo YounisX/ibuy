@@ -19,6 +19,8 @@ cloudUpload().single('image'),
 validation(validators.updateCategory),
 categoryController.updateCategory
 )
+router.get('/:categoryId',
+ categoryController.getCategory);
 
 
 export default router

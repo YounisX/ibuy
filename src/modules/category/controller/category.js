@@ -48,3 +48,10 @@ export const updateCategory = AsyncHandler(async (req, res, next) => {
 
  return res.json({category})
 });
+export const getCategory = AsyncHandler(async (req, res, next) => {
+
+  const category = await categoryModel.findById(req.params.categoryId);
+
+
+ return res.json({category})
+});
