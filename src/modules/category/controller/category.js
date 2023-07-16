@@ -42,16 +42,13 @@ export const updateCategory = AsyncHandler(async (req, res, next) => {
 
    category.image={ public_id, secure_url }
   console.log(category.image)
-
   }
  await category.save();
-
  return res.json({category})
 });
+
+
 export const getCategory = AsyncHandler(async (req, res, next) => {
-
   const category = await categoryModel.findById(req.params.categoryId);
-
-
  return res.json({category})
 });

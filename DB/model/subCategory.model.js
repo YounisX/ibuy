@@ -1,6 +1,6 @@
 import mongoose, { Schema, Types, model } from "mongoose";
 
-const categorySchema = new Schema({
+const subCategorySchema = new Schema({
     name:{
         type:String,
         required:true,
@@ -15,11 +15,11 @@ const categorySchema = new Schema({
         type:Types.ObjectId,
         required:false, // to be converted to true after prototype
         ref:'User'
-    }
-    
+    },
+    categoryId:{type:String,required:true,ref:'Category'},
+    customId:{type:String,required:true,unique:true}
+
 },{timestamps:true})
 
-const categoryModel = mongoose.models.Category|| model('Category', categorySchema)
-export default categoryModel;
-
-
+const subCategoryModel = mongoose.models.SubCategory || model('SubCategory', subCategorySchema)
+export default subCategoryModel;

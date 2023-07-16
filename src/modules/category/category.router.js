@@ -1,11 +1,12 @@
 import { Router } from "express";
-const router = Router()
+import subCategory from '../subcategory/subcategory.router.js'
 import * as categoryController from './controller/category.js'
 import { cloudUpload, fileValidation } from "../../utils/multer.js";
 import { validation } from "../../middleware/validation.js";
 import * as validators from '../category/category.validation.js'
+const router = Router()
 
-
+router.use('/:categoryId/subCategory',subCategory)
 
 router.get('/', (req ,res)=>{
     res.status(200).json({message:"Category Module"})
@@ -19,7 +20,7 @@ cloudUpload().single('image'),
 validation(validators.updateCategory),
 categoryController.updateCategory
 )
-router.get('/:categoryId',
+router.get('/:categoryId/subCategory',
  categoryController.getCategory);
 
 

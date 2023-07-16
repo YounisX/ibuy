@@ -11,7 +11,8 @@ export const AsyncHandler = (fn) => {
 export const globalErrorHandling  = (err,req,res,next)=>{
     if(err){
 if(process.env.MOOD=='DEV'){
-    return res.status(err.cause||500).json({messag:'catch error',error:err.message})
+  console.log({error:err.message, stack:err.stack});
+    return res.status(err.cause||500).json({messag:'catch error',error:err.message, stack:err.stack})
 }
 else{
     return res.status(err.cause||500).json({messag:'catch error'},err.message)
