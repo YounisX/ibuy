@@ -4,7 +4,7 @@ import * as categoryController from './controller/category.js'
 import { cloudUpload, fileValidation } from "../../utils/multer.js";
 import { validation } from "../../middleware/validation.js";
 import * as validators from '../category/category.validation.js'
-const router = Router()
+const router = Router({caseSensitive:false})
 
 router.use('/:categoryId/subCategory',subCategory)
 
@@ -20,7 +20,7 @@ cloudUpload().single('image'),
 validation(validators.updateCategory),
 categoryController.updateCategory
 )
-router.get('/:categoryId/subCategory',
+router.get('/:categoryId',
  categoryController.getCategory);
 
 

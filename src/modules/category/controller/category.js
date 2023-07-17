@@ -22,8 +22,6 @@ export const createCategory = AsyncHandler(async (req, res, next) => {
 });
 
 export const updateCategory = AsyncHandler(async (req, res, next) => {
-  const { name } = req.body;
-  console.log(req.params.categoryId);
   const category = await categoryModel.findById(req.params.categoryId);
   if (!category) {
     return next(new Error("category doesnt exist", { cause: 400 }));
@@ -31,7 +29,6 @@ export const updateCategory = AsyncHandler(async (req, res, next) => {
  category.name = req.body.name;
  category.slug = slugify(req.body.name,'-')
  if(req.file){
-  console.log(category.image)
 
   const { public_id, secure_url } = await cloudinary.uploader.upload(
     req.file.path,
@@ -41,7 +38,6 @@ export const updateCategory = AsyncHandler(async (req, res, next) => {
    await cloudinary.uploader.destroy(category.image.public_id)
 
    category.image={ public_id, secure_url }
-  console.log(category.image)
   }
  await category.save();
  return res.json({category})
