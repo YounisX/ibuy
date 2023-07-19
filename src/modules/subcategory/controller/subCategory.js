@@ -1,5 +1,5 @@
 import cloudinary from "./../../../utils/cloudinary.js";
-import subCategoryModel from "./../../../../DB/model/subCategory.model.js";
+import subCategoryModel from "../../../../DB/model/SubCategory.model.js";
 import slugify from "slugify";
 import { AsyncHandler } from "../../../utils/errorHandling.js";
 import categoryModel from "../../../../DB/model/Category.model.js";

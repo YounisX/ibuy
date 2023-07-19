@@ -17,7 +17,13 @@ const categorySchema = new Schema({
         ref:'User'
     }
     
-},{timestamps:true})
+},{timestamps:true,toJSON:{virtuals:true},toObject:{virtuals:true}})
+
+categorySchema.virtual('SubCategory',{
+    ref: 'SubCategory',
+    localField: '_id',
+    foreignField: 'categoryId',
+  });
 
 const categoryModel = mongoose.models.Category|| model('Category', categorySchema)
 export default categoryModel;

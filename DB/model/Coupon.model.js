@@ -1,10 +1,13 @@
-import mongoose from "mongoose";
+import mongoose, {Schema,model,Types} from "mongoose";
 
 const couponSchema = new Schema({
-    code: {
+    name: {
         type: String,
         required: true,
         unique: true
+    },
+    image: {
+        type: Object
     },
     discount: {
         type: Number,
@@ -14,9 +17,14 @@ const couponSchema = new Schema({
         type: Date,
         required: true
     },
-    createdBy: {
+    usedBy: {
         type: Types.ObjectId,
         required: true,
+        ref: 'User'
+    },
+    createdBy: {
+        type: Types.ObjectId,
+        required: false, //to be converted to true in the end 
         ref: 'User'
     }
 }, { timestamps: true });

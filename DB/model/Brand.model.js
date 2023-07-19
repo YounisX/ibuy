@@ -1,5 +1,5 @@
 const brandSchema = new Schema({
-    name: {
+    amount: {
         type: String,
         required: true,
         unique: true
@@ -8,9 +8,10 @@ const brandSchema = new Schema({
         type: Object,
         required: true
     },
-    createdBy: {
+    addedBy: {
         type: Types.ObjectId,
         required: true,
         ref: 'User'
     }
-}, { timestamps: true });
+    }
+, { timestamps: true });

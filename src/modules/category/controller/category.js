@@ -45,6 +45,6 @@ export const updateCategory = AsyncHandler(async (req, res, next) => {
 
 
 export const getCategory = AsyncHandler(async (req, res, next) => {
-  const category = await categoryModel.findById(req.params.categoryId);
- return res.json({category})
+  const category = await categoryModel.findById(req.params.categoryId).populate({path:'SubCategory'});
+  return res.json({ category });
 });
