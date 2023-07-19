@@ -5,26 +5,21 @@ import { AsyncHandler } from "../../../utils/errorHandling.js";
 import subCategoryModel from "../../../../DB/model/SubCategory.model.js";
 import { nanoid } from "nanoid";
  export const createCoupon = AsyncHandler(async (req, res, next) => {
-  const { subCategoryId } = req.params;
-  if (!await subCategoryModel.findById(subCategoryId)) {
-    return next(new Error('Invalid subCategoryId', { cause: 400 }));
-  }
-   const { title } = req.body;
-  if (await couponModel.findOne({ title })) {
+  
+   const { name } = req.body;
+  if (await couponModel.findOne({ name })) {
     return next(new Error("Duplicated title", { cause: 409 }));
   }
-   const customId = nanoid();
-  const { public_id, secure_url } = await cloudinary.uploader.upload(
-    req.file.path,
-    { folder: `${process.env.APP_NAME}/category/subCategory/coupon/${subCategoryId}/${customId}` }
+  if(req.file){
+    const { public_id, secure_url } = await cloudinary.uploader.upload(
+      req.file.path,
+      { folder: `${process.env.APP_NAME}/coupon` }
+    );
+    req.body.image = { public_id, secure_url }
+  }
+   const coupon = await couponModel.create(
+req.body
   );
-   const coupon = await couponModel.create({
-    title,
-    slug: slugify(title, "-"),
-    image: { public_id, secure_url },
-    subCategoryId,
-    customId
-  });
    return res.status(201).json({ message: "done", coupon });
 });
  export const updateCoupon = AsyncHandler(async (req, res, next) => {

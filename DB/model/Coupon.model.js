@@ -11,17 +11,17 @@ const couponSchema = new Schema({
     },
     discount: {
         type: Number,
-        required: true
+        required: false
     },
     expiryDate: {
         type: Date,
-        required: true
+        required: false
     },
-    usedBy: {
+    usedBy: [{
         type: Types.ObjectId,
-        required: true,
+        required: false,
         ref: 'User'
-    },
+    }],
     createdBy: {
         type: Types.ObjectId,
         required: false, //to be converted to true in the end 

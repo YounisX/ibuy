@@ -8,12 +8,12 @@ import * as validators from '../coupon/coupon.validation.js';
   res.status(200).json({ message: "Coupon Module" });
 });
  router.post('/create',
-  cloudUpload().single('image'),
+  cloudUpload(fileValidation.image).single('image'),
   validation(validators.createCoupon),
   couponController.createCoupon
 );
  router.put('/:couponId',
-  cloudUpload().single('image'),
+  cloudUpload(fileValidation.image).single('image'),
   validation(validators.updateCoupon),
   couponController.updateCoupon
 );
