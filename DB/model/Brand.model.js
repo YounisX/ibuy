@@ -1,17 +1,22 @@
+import mongoose,{model,Schema,Types} from "mongoose";
+
 const brandSchema = new Schema({
-    amount: {
-        type: String,
-        required: true,
-        unique: true
+    image: {
+        type: Object,
+        required: true
+       
     },
-    logo: {
+    name: {
         type: Object,
         required: true
     },
-    addedBy: {
+    createdby: {
         type: Types.ObjectId,
-        required: true,
+        required: false, //to be converted to true
         ref: 'User'
     }
     }
 , { timestamps: true });
+
+const brandModel = mongoose.models.Brand||model('Brand',brandSchema);
+export default brandModel ; 
