@@ -3,8 +3,11 @@ import mongoose,{model,Schema,Types} from "mongoose";
 const brandSchema = new Schema({
     image: {
         type: Object,
-        required: true
-       
+        required: true 
+    },
+    slug: {
+        type: String,
+        required: true 
     },
     name: {
         type: Object,
