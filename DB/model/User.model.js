@@ -2,7 +2,8 @@ import { Schema, model } from "mongoose";
 
 
 const userSchema = new Schema({
-
+    firstName:String,
+    lastName:String,
     userName: {
         type: String,
         required: [true, 'userName is required'],
@@ -22,25 +23,29 @@ const userSchema = new Schema({
     phone: {
         type: String,
     },
+    gender:{
+        type:String,
+        enum:['male','female']
+    },
+    address:{
+        type:String
+    },
     role: {
         type: String,
         default: 'User',
         enum: ['User', 'Admin']
     },
 
-    active: {
-        type: Boolean,
-        default: false,
+    status:{
+        type:String,
+        default:'offline',
+        enum:['online','offline']
     },
     confirmEmail: {
         type: Boolean,
         default: false,
     },
-    blocked: {
-        type: Boolean,
-        default: false,
-    },
-    image: String,
+    image: Object,
     DOB: String,
 }, {
     timestamps: true
