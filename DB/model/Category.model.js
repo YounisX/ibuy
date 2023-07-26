@@ -13,10 +13,14 @@ const categorySchema = new Schema({
     },
     createdBy:{
         type:Types.ObjectId,
-        required:false, // to be converted to true after prototype
+        required:true, // to be converted to true after prototype
+        ref:'User'
+    },
+    updatedBy:{
+        type:Types.ObjectId,// to be converted to true after prototype
         ref:'User'
     }
-    
+
 },{timestamps:true,toJSON:{virtuals:true},toObject:{virtuals:true}})
 
 categorySchema.virtual('SubCategory',{

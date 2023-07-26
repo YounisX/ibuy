@@ -16,6 +16,7 @@ const category = await categoryModel.create({
   name,
   slug: slugify(name, "-"),
   image: { public_id, secure_url },
+  createdBy:req.user._id
 });
 
 return res.status(201).json({ message: "done", category });
@@ -38,6 +39,7 @@ await cloudinary.uploader.destroy(category.image.public_id)
 
 category.image={ public_id, secure_url }
 }
+category.updatedBy=req.user._id
 await category.save();
 return res.json({category})
 });
