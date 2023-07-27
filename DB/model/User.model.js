@@ -36,6 +36,10 @@ const userSchema = new Schema({
         enum: ['User', 'Admin','HR'],
         required:true
     },
+    forgetCode:{
+        type:Number,
+        default:null,
+    },
 
     status:{
         type:String,
