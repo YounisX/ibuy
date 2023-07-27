@@ -3,6 +3,7 @@ import userModel from "./../../../../DB/model/User.model.js";
 import { generateToken, verifyToken } from "./../../../utils/GenerateAndVerifyToken.js";
 import sendEmail from "../../../utils/email.js";
 import { hash, compare } from "../../../utils/HashAndCompare.js";
+import { customAlphabet, nanoid } from "nanoid";
 
 export const signup = AsyncHandler(async (req, res, next) => {
   const { userName, email, password } = req.body;
@@ -554,22 +555,17 @@ if(!user.confirmEmail){
 });
 
 
-export const forgotPassword = AsyncHandler(async (req, res, next) => {
+export const forgotPasswordCode = AsyncHandler(async (req, res, next) => {
   const { email } = req.body;
-  // cheking if ther user Exist
-  const findUser = await userModel.findOne({ email });
-  if (findUser) {
-    return next(new Error("this email Alraady Exist!", { cause: 409 }));
-  }
-  //sending email
-  const token = generateToken({ payload: { email }, expiresIn: 60 * 5 });
-  const refreshToken = generateToken({
-    payload: { email },
-    expiresIn: 60 * 60 * 24 * 30,
-  });
-  const link = `${req.protocol}://${req.headers.host}/auth/confirmEmail/${token}`;
-  const refreshLink = `${req.protocol}://${req.headers.host}/auth/newConfirmEmail/${refreshToken}`;
 
+  const generatedResetCode = (customAlphabet('123456789',4));
+  const resetCode = generatedResetCode();
+  const user = await userModel.findOneAndUpdate({ email },{forgetCode:user.resetCode});
+  if (user) {
+    return user? res.json({user}): next(new Error('this email doesnt exist'),{cause:404})
+  }
+  console.log({user});
+  //sending email
   const html = `<!DOCTYPE html>
    <html>
    <head>
@@ -753,7 +749,7 @@ export const forgotPassword = AsyncHandler(async (req, res, next) => {
                        <table border="0" cellpadding="0" cellspacing="0">
                          <tr>
                            <td align="center" bgcolor="#1a82e2" style="border-radius: 6px;">
-                             <a href="${link}" target="_blank" style="display: inline-block; padding: 16px 36px; font-family: 'Source Sans Pro', Helvetica, Arial, sans-serif; font-size: 16px; color: #ffffff; text-decoration: none; border-radius: 6px;">Confirm Email</a>
+                             <p>this is your Reset Code : ${resetCode}</p>
                            </td>
                          </tr>
                        </table>
@@ -764,14 +760,6 @@ export const forgotPassword = AsyncHandler(async (req, res, next) => {
              </tr>
              <!-- end button -->
    
-             <!-- start copy -->
-             <tr>
-               <td align="left" bgcolor="#ffffff" style="padding: 24px; font-family: 'Source Sans Pro', Helvetica, Arial, sans-serif; font-size: 16px; line-height: 24px;">
-                 <p style="margin: 0;">confirmation time out ? click the link below send new confirmation email </p>
-                 <p style="margin: 0;"><a href="${refreshLink}" target="_blank">click here</a></p>
-               </td>
-             </tr>
-             <!-- end copy -->
    
    
            </table>
@@ -790,16 +778,8 @@ export const forgotPassword = AsyncHandler(async (req, res, next) => {
    </body>
    </html>`;
 
-  if (!await sendEmail({ to: email, subject: "confirmation email", html })) {
+  if (!await sendEmail({ to: email, subject: "reset password", html })) {
     return next(new Error("email rejected", { cause: 400 }));
   }
-  //todo Hashing password
-  const hashPassword = hash({ plaintext: password });
-  console.log(hashPassword);
-  
-   //todo creating User ; 
-
-   const {_id}= await userModel.create({userName,email,password:hashPassword})
-   return res.json({_id})
 
 });
