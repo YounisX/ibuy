@@ -4,7 +4,7 @@ import * as categoryController from './controller/category.js'
 import { cloudUpload, fileValidation } from "../../utils/multer.js";
 import { validation } from "../../middleware/validation.js";
 import * as validators from '../category/category.validation.js'
-import auth from './../../middleware/auth.js';
+import auth, { roles } from './../../middleware/auth.js';
 const router = Router({caseSensitive:false})
 
 router.use('/:categoryId/subCategory',subCategory)
@@ -13,7 +13,7 @@ router.get('/', (req ,res)=>{
     res.status(200).json({message:"Category Module"})
 })
 
-router.post('/create',auth(),cloudUpload().single('image'),validation(validators.createCategory),
+router.post('/create',auth([roles.HR]),cloudUpload().single('image'),validation(validators.createCategory),
 categoryController.createCategory)
 
 
@@ -23,7 +23,7 @@ validation(validators.updateCategory),
 categoryController.updateCategory)
 
 
-router.get('/:categoryId',
+router.get('/:categoryId',auth(Object.values(roles)),
  categoryController.getCategory);
 
 

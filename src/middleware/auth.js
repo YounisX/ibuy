@@ -3,14 +3,19 @@ import userModel from "../../DB/model/User.model.js";
 import { AsyncHandler } from './../utils/errorHandling.js';
 import { verifyToken } from "../utils/GenerateAndVerifyToken.js";
 
-verifyToken
+export const roles = {
+    Admin:"Admin",
+    User:"User",
+    HR:"HR"
+}
 
-const auth =  () => {
+
+const auth =  (roles=[]) => {
         return AsyncHandler( async (req,res,next)=>{
 
   
         const { authorization } = req.headers;
-
+       
         if (!authorization?.startsWith(process.env.BEARER_KEY)) {
             return next(new Error('invalid bearer key',{cause:401}))
         }
@@ -25,11 +30,15 @@ const auth =  () => {
         if (!decoded?.userId) {
             return res.json({ message: "In-valid token payload" })
         }
-        const authUser = await userModel.findById(decoded.userId).select('userName email role')
-        if (!authUser) {
+        const user = await userModel.findById(decoded.userId).select('userName email role')
+        if (!user) {
             return res.json({ message: "Not register account" })
         }
-        req.user = authUser;
+        if(!roles.includes(user.role)){
+            return next(new Error('not authenticated user',{cause:402}))
+        }
+
+        req.user = user;
         return next()
   
     

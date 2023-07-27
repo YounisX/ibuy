@@ -16,7 +16,7 @@ const category = await categoryModel.create({
   name,
   slug: slugify(name, "-"),
   image: { public_id, secure_url },
-  createdBy:req.user._id
+  createdBy:req.user._id,
 });
 
 return res.status(201).json({ message: "done", category });
