@@ -9,7 +9,6 @@ router.post('/signup',validation(validators.signup),authController.signup);
 router.post('/login',authController.login);
 router.get('/confirmEmail/:token',validation(validators.confirmEmail),authController.confirmEmail)
 router.get('/newConfirmEmail/:token',validation(validators.confirmEmail),authController.newConfirmEmail);
-router.patch('/forgotPassword',authController.forgotPasswordCode);
 
 
 export default router
