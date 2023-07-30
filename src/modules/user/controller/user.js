@@ -1,7 +1,8 @@
 import { AsyncHandler } from "./../../../utils/errorHandling.js";
-import userModel from "./../../../../DB/model/User.model.js";
+import userModel from "../../../../DB/model/User.model.js";
 import sendEmail from "../../../utils/email.js";
-import { customAlphabet, nanoid } from "nanoid";
+import { customAlphabet } from "nanoid";
+import { hash,compare } from "../../../utils/HashAndCompare.js";
 
 export const sendCode = AsyncHandler(async (req, res, next) => {
     const { email } = req.body;
@@ -235,15 +236,30 @@ export const sendCode = AsyncHandler(async (req, res, next) => {
 
 
   export const resetPassword = AsyncHandler(async (req, res, next) => {
-    const { email } = req.body;
-  
-    const generatedResetCode = (customAlphabet('123456789',4));
-    const resetCode = generatedResetCode();
-    const user = await userModel.findOneAndUpdate({ email },{forgetCode:user.resetCode});
-    if (user) {
-      return user? res.json({user}): next(new Error('this email doesnt exist'),{cause:404})
+    const { code,password } = req.body;
+    console.log(code);
+console.log(req.user._id);
+    const user = await userModel.findOne({ id:req.user._id});
+    if (!user) {
+   return next(new Error('this email doesnt exist'),{cause:404})
     }
-    console.log({user});
+    console.log(user);
+    if(user.forgetCode != code){
+        return next(new Error('wrong verfication Code',{causer:400}))
+}
+const hashPassword = hash({ plaintext: password });
+
+    // console.log(hashPassword);
+    const compareWithOldPassword  = compare({plaintext:password,hashValue:user.password})
+
+    if(compareWithOldPassword){
+        return next(new Error('can not apply the old password',{cause:401}));
+    }
+
+    user.password = hashPassword;
+    user.forgetCode = null ; 
+    await user.save();
+    return res.json('password updated successfully')
     //sending email
   
   
