@@ -17,6 +17,11 @@ const brandSchema = new Schema({
         type: Types.ObjectId,
         required: false, //to be converted to true
         ref: 'User'
+    },
+    updatedBy: {
+        type: Types.ObjectId,
+        required: false, //to be converted to true
+        ref: 'User'
     }
     }
 , { timestamps: true });

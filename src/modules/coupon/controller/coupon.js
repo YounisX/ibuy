@@ -6,7 +6,7 @@ import subCategoryModel from "../../../../DB/model/SubCategory.model.js";
 import { nanoid } from "nanoid";
  export const createCoupon = AsyncHandler(async (req, res, next) => {
   
-   const { name } = req.body;
+   const name  = req.body.name.toLowerCase();
   if (await couponModel.findOne({ name })) {
     return next(new Error("Duplicated title", { cause: 409 }));
   }
@@ -28,7 +28,7 @@ req.body
   if (!coupon) {
     return next(new Error("Coupon doesn't exist", { cause: 400 }));
   }
-   coupon.title = req.body.title;
+   coupon.title = req.body.title.toLowerCase();
   coupon.slug = slugify(req.body.title, '-');
    if (req.file) {
     const { public_id, secure_url } = await cloudinary.uploader.upload(

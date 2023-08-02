@@ -5,6 +5,7 @@ import { AsyncHandler } from "../../../utils/errorHandling.js";
 
 export const createBrand = AsyncHandler(async(req,res,next)=>{
     const name = req.body.name.toLowerCase();
+    console.log(name);
     // const {createdBy}= req.params;
     const findBrand= await brandModel.findOne({name});
 
@@ -31,8 +32,8 @@ export const updateBrand = AsyncHandler(async (req, res, next) => {
             return next(Error('Duplicate name',{cause:400}))
     }
 
-    brand.name = req.body.name;
-    brand.slug = slugify(req.body.name, '-');
+    brand.name = req.body.name.toLowerCase();
+    brand.slug = slugify(brand.name, '-');
     if (req.file) {
       const { public_id, secure_url } = await cloudinary.uploader.upload(
         req.file.path,
@@ -41,6 +42,7 @@ export const updateBrand = AsyncHandler(async (req, res, next) => {
       await cloudinary.uploader.destroy(brand.image.public_id);
       brand.image = { public_id, secure_url };
     }
+    brand.updatedBy = req.user._id; 
     await brand.save();
     return res.json({ brand });
   });

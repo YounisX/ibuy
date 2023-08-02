@@ -53,4 +53,4 @@ const auth =  (roles=[]) => {
 )
 }
 
-export default auth
+export default auth ;
