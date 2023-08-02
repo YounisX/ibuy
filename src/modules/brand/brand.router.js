@@ -12,7 +12,7 @@ router.get('/', (req ,res)=>{
     res.status(200).json({message:"Brand Module"})
 })
 
-router.post('/create',cloudUpload().single('image'),brandController.createBrand)
+router.post('/create',auth(),cloudUpload().single('image'),brandController.createBrand)
 
 router.put('/:brandId',
   cloudUpload().single('image'),
