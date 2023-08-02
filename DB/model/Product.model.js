@@ -1,4 +1,4 @@
-import mongoose, { model } from "mongoose";
+import mongoose, { Types, model } from "mongoose";
 
 const productSchema = new Schema({
     _id: {
@@ -41,13 +41,12 @@ const productSchema = new Schema({
         type: [String],
         required: true
     },
-    images: {
-        type: [Object],
-        required: true
-    },
-    coverImage: {
+    mainImage: {
         type: Object,
         required: true
+    },
+    subImages: {
+        type: [Object]
     },
     categoryId: {
         type: Types.ObjectId,
@@ -75,8 +74,19 @@ const productSchema = new Schema({
     totalAmount: {
         type: Number,
         required: true
-    }
-}, { timestamps: true });
+    },
+    createdBy:{
+        type:Types.ObjectId,
+        required:true, // to be converted to true after prototype
+        ref:'User'
+    },
+    updatedBy:{
+        type:Types.ObjectId,// to be converted to true after prototype
+        ref:'User'
+    },
+    wishUserList:[{type:Types.ObjectId, ref:'User'}]
+}, 
+{ timestamps: true });
 
 const productModel = mongoose.models.Product||model('Product', productSchema)
 export default productModel ;
