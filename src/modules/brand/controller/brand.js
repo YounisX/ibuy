@@ -4,19 +4,20 @@ import slugify from 'slugify'
 import { AsyncHandler } from "../../../utils/errorHandling.js";
 
 export const createBrand = AsyncHandler(async(req,res,next)=>{
-    const {name,image} = req.body;
+    const name = req.body.name.toLowerCase();
     // const {createdBy}= req.params;
     const findBrand= await brandModel.findOne({name});
 
-    if(findBrand){
+  if(findBrand){
         return next(Error('Duplicate name',{cause:400}))
     }
     const {public_id,secure_url} = await cloudinary.uploader.upload(req.file.path,{folder:`${process.env.APP_NAME}/brand`})
     const brand = await brandModel.create({
         name,
         slug:slugify(name,'-'),
-        image:{public_id,secure_url}})
-    console.log({public_id,secure_url});
+        image:{public_id,secure_url},
+        createdBy:req.user._id
+      })
    return res.json({brand})
 
 })

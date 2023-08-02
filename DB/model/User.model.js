@@ -52,6 +52,10 @@ const userSchema = new Schema({
     },
     image: Object,
     DOB: String,
+    changePasswordTime:{
+        type:Date
+
+    }
 }, {
     timestamps: true
 })

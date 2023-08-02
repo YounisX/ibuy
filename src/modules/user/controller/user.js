@@ -2,20 +2,26 @@ import { AsyncHandler } from "./../../../utils/errorHandling.js";
 import userModel from "../../../../DB/model/User.model.js";
 import sendEmail from "../../../utils/email.js";
 import { customAlphabet } from "nanoid";
-import { hash,compare } from "../../../utils/HashAndCompare.js";
+import { hash, compare } from "../../../utils/HashAndCompare.js";
 
 export const sendCode = AsyncHandler(async (req, res, next) => {
-    const { email } = req.body;
-  
-    const generatedResetCode = (customAlphabet('123456789',4));
-    const resetCode = generatedResetCode();
-    const user = await userModel.findOneAndUpdate({ email },{forgetCode:user.resetCode});
-    if (user) {
-      return user? res.json({user}): next(new Error('this email doesnt exist'),{cause:404})
-    }
-    console.log({user});
-    //sending email
-    const html = `<!DOCTYPE html>
+  const { email } = req.body;
+
+  const generatedResetCode = customAlphabet("123456789", 4);
+  const resetCode = generatedResetCode();
+  const user = await userModel.findOneAndUpdate(
+    { email },
+    { forgetCode: resetCode }
+    ,{new:true}
+  );
+  if (user) {
+    return user
+      ? res.json({ user })
+      : next(new Error("this email doesnt exist"), { cause: 404 });
+  }
+  console.log({ user });
+  //sending email
+  const html = `<!DOCTYPE html>
      <html>
      <head>
      
@@ -226,42 +232,41 @@ export const sendCode = AsyncHandler(async (req, res, next) => {
      
      </body>
      </html>`;
-  
-    if (!await sendEmail({ to: email, subject: "reset password", html })) {
-      return next(new Error("email rejected", { cause: 400 }));
-    }
-  
+
+  if (!(await sendEmail({ to: email, subject: "reset password", html }))) {
+    return next(new Error("email rejected", { cause: 400 }));
+  }
+});
+
+export const resetPassword = AsyncHandler(async (req, res, next) => {
+  const { code, password } = req.body;
+  console.log(code);
+  console.log(req.user._id);
+  const user = await userModel.findOne({ id: req.user._id });
+  if (!user) {
+    return next(new Error("this email doesnt exist"), { cause: 404 });
+  }
+  console.log(user);
+  if (user.forgetCode != code) {
+    return next(new Error("wrong verfication Code", { causer: 400 }));
+  }
+
+  const hashPassword = hash({ plaintext: password });
+
+  // console.log(hashPassword);
+  const compareWithOldPassword = compare({
+    plaintext: password,
+    hashValue: user.password,
   });
-  
 
+  if (compareWithOldPassword) {
+    return next(new Error("can not apply the old password", { cause: 401 }));
+  }
 
-  export const resetPassword = AsyncHandler(async (req, res, next) => {
-    const { code,password } = req.body;
-    console.log(code);
-console.log(req.user._id);
-    const user = await userModel.findOne({ id:req.user._id});
-    if (!user) {
-   return next(new Error('this email doesnt exist'),{cause:404})
-    }
-    console.log(user);
-    if(user.forgetCode != code){
-        return next(new Error('wrong verfication Code',{causer:400}))
-}
-const hashPassword = hash({ plaintext: password });
-
-    // console.log(hashPassword);
-    const compareWithOldPassword  = compare({plaintext:password,hashValue:user.password})
-
-    if(compareWithOldPassword){
-        return next(new Error('can not apply the old password',{cause:401}));
-    }
-
-    user.password = hashPassword;
-    user.forgetCode = null ; 
-    await user.save();
-    return res.json('password updated successfully')
-    //sending email
-  
-  
-  });
-  
+  user.password = hashPassword;
+  user.forgetCode = null;
+  user.changePasswordTime = Date.now();
+  await user.save();
+  return res.json("password updated successfully");
+  //sending email
+});
