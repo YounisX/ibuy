@@ -7,6 +7,7 @@ export const createsubCategory = joi.object({
     customId:joi.string(),
     name:joi.string().min(3).max(26).required(),
     file:generalFields.file.required()
+    
 }
 ).required();
 

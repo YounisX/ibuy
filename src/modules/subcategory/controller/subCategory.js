@@ -6,14 +6,18 @@ import categoryModel from "../../../../DB/model/Category.model.js";
 import { nanoid } from "nanoid";
 export const createsubCategory = AsyncHandler(async (req, res, next) => {
 const {categoryId} = req.params;
-if(!await categoryModel.findById(categoryId)){
-    return next(new Error('invalid categoryId',{cause:400}))
-}
+console.log(categoryId);
+
 
   const { name } = req.body;
+  
   if (await subCategoryModel.findOne({ name })) {
     return next(new Error("Duplicated name", { cause: 409 }));
   }
+
+  if(!await categoryModel.findById(categoryId)){
+    return next(new Error('invalid categoryId',{cause:400}))
+}
   const customId = nanoid();
   const { public_id, secure_url } = await cloudinary.uploader.upload(
     req.file.path,

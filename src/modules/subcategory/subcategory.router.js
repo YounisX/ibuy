@@ -9,7 +9,7 @@ router.get('/', (req,res)=>{
 res.status(200).json({message:"SubCategory Module"})
 })
 
-router.post('/create',
+router.post('/create/:categoryId',
 cloudUpload().single('image'),validation(validators.createsubCategory),
 subCategoryController.createsubCategory)
 

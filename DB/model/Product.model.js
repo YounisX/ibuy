@@ -1,10 +1,7 @@
 import mongoose, { Schema, Types, model } from "mongoose";
 
 const productSchema = new Schema({
-    _id: {
-        type: Types.ObjectId,
-        required: true
-    },
+ 
     name: {
         type: String,
         required: true
@@ -19,15 +16,19 @@ const productSchema = new Schema({
     },
     stock: {
         type: Number,
-        required: true
+        required: false
     },
     price: {
         type: Number,
         required: true
     },
-    discount: {
+    finalPrice: {
         type: Number,
         required: true
+    },
+    discount: {
+        type: Number,
+        required: false
     },
     paymentPrice: {
         type: Number,
@@ -35,11 +36,11 @@ const productSchema = new Schema({
     },
     colors: {
         type: [String],
-        required: true
+        required: false
     },
     sizes: {
         type: [String],
-        required: true
+        required: false
     },
     mainImage: {
         type: Object,
@@ -65,19 +66,19 @@ const productSchema = new Schema({
     },
     avgRate: {
         type: Number,
-        required: true
+        required: false
     },
     soldItem: {
         type: Number,
-        required: true
+        required: false
     },
     totalAmount: {
         type: Number,
-        required: true
+        required: false
     },
     createdBy:{
         type:Types.ObjectId,
-        required:true, // to be converted to true after prototype
+        required:false, // to be converted to true after prototype
         ref:'User'
     },
     updatedBy:{

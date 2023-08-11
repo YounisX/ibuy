@@ -29,13 +29,16 @@ export const createProduct = async (req, res, next) => {
 
   req.body.finalPrice = price - (price * discount||0) / 100; //finding if there's a
                                 // discount and apply final price
-req.body.customId = nanoid();
-  const {secure_url,public_id} = await cloudinary.uploader.upload(req.file.path,{folder:`/${process.env.APP_NAME}/Category/SubCategory/Products/${req.body.customId}`})
-  req.body.mainImage = {secure_url,public_id} ; 
+req.body.paymentPricre = req.body.finalPrice ;                      
 
-if(req.files){
+req.body.cutomId = nanoid();
+console.log(req.files.mainImage[0].path);
+  const {secure_url,public_id} = await cloudinary.uploader.upload(req.files.mainImage[0].path,{folder:`/${process.env.APP_NAME}/Category/SubCategory/Products/${req.body.customId}`})
+  req.body.mainImage = {secure_url,public_id} ; 
+  
+if(req.files.subImages){
     req.body.subImages=[];
-    for (const file of req.files) {
+    for (const file of req.files.subImages) {
   const {secure_url,public_id} = await cloudinary.uploader.upload(file.path,{folder:`/${process.env.APP_NAME}/Category/SubCategory/Products/${req.body.customId}`})
         req.body.subImages.push({secure_url,public_id})
     }
