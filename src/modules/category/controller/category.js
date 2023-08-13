@@ -43,7 +43,7 @@ category.updatedBy=req.user._id
 await category.save();
 return res.json({category})
 });
-
+ 
 
 export const getCategory = AsyncHandler(async (req, res, next) => {
 const category = await categoryModel.findById(req.params.categoryId).populate({path:'SubCategory'});

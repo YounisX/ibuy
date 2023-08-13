@@ -44,7 +44,6 @@ const auth =  (roles=[]) => {
         if(!roles.includes(user.role)){
             return next(new Error('not authenticated user',{cause:402}))
         }
-
         req.user = user;
         return next()
   

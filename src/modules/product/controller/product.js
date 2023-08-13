@@ -5,15 +5,16 @@ import slugify from "slugify";
 import cloudinary from './../../../utils/cloudinary.js';
 import { nanoid } from "nanoid";
 import productModel from './../../../../DB/model/Product.model.js';
+import { AsyncHandler } from "../../../utils/errorHandling.js";
 
 
 
-export const createProduct = async (req, res, next) => {
+export const createProduct = AsyncHandler( async (req, res, next) => {
   const { name, catergoryId, subCategoryId, brandId,price,discount } = req.body;
 
   //checking if this products belongs to a category
   const category = await categoryModel.findOne({
-    _id: subCategoryId,catergoryId,
+    subCategoryId,catergoryId
   });
   if (!category) {
     return next(new Error("invalid category or subcategory "), { cause: 400 });
@@ -27,12 +28,11 @@ export const createProduct = async (req, res, next) => {
 
   req.body.slug = slugify(name, { lower: true, replacement: "-", trim: true });
 
-  req.body.finalPrice = price - (price * discount||0) / 100; //finding if there's a
+  req.body.finalPrice = Number.parseFloat(price - (price * discount||0) / 100).toFixed(2) //finding if there's a
                                 // discount and apply final price
 req.body.paymentPricre = req.body.finalPrice ;                      
 
 req.body.cutomId = nanoid();
-console.log(req.files.mainImage[0].path);
   const {secure_url,public_id} = await cloudinary.uploader.upload(req.files.mainImage[0].path,{folder:`/${process.env.APP_NAME}/Category/SubCategory/Products/${req.body.customId}`})
   req.body.mainImage = {secure_url,public_id} ; 
   
@@ -41,13 +41,13 @@ if(req.files.subImages){
     for (const file of req.files.subImages) {
   const {secure_url,public_id} = await cloudinary.uploader.upload(file.path,{folder:`/${process.env.APP_NAME}/Category/SubCategory/Products/${req.body.customId}`})
         req.body.subImages.push({secure_url,public_id})
-    }
+    } 
 }
-req.body.createdBy = req.body._id;
+req.body.createdBy = req.user._id;
 const product = await productModel.create(req.body);
-if(!product){
+if(!product){ 
     return next(new Error("fail to create product"), { cause: 400 });
 }
 return res.json({product})
 
-};
+})

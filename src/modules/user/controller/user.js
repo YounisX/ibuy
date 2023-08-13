@@ -239,10 +239,9 @@ export const sendCode = AsyncHandler(async (req, res, next) => {
 });
 
 export const resetPassword = AsyncHandler(async (req, res, next) => {
-  const { code, password } = req.body;
+  const { code, password,email } = req.body;
   console.log(code);
-  console.log(req.user._id);
-  const user = await userModel.findOne({ id: req.user._id });
+  const user = await userModel.findOne({ email});
   if (!user) {
     return next(new Error("this email doesnt exist"), { cause: 404 });
   }

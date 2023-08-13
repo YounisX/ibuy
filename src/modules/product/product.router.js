@@ -2,6 +2,9 @@ import { Router } from "express";
 import { createProduct } from './controller/product.js';
 import * as productController from './controller/product.js'
 import { cloudUpload } from "../../utils/multer.js";
+import auth, { roles } from "../../middleware/auth.js";
+import { validation } from "../../middleware/validation.js";
+import * as validators from './product.validation.js'
 const router = Router()
 
 
@@ -11,10 +14,13 @@ router.get('/', (req ,res)=>{
     res.status(200).json({message:"product Module"})
 })
 
-router.post('/create',cloudUpload().fields([
+router.post('/create', 
+auth(['Admin']),cloudUpload().fields([
     {name:"mainImage", maxCount:1},
     {name:"subImages", maxCount:5}
-]),productController.createProduct)
+]),
+validation(validators.createProduct),
+productController.createProduct)
 
 
 

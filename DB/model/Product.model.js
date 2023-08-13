@@ -24,7 +24,7 @@ const productSchema = new Schema({
     },
     finalPrice: {
         type: Number,
-        required: true
+        required: false
     },
     discount: {
         type: Number,
@@ -32,7 +32,7 @@ const productSchema = new Schema({
     },
     paymentPrice: {
         type: Number,
-        required: true
+        required: false
     },
     colors: {
         type: [String],
@@ -78,7 +78,7 @@ const productSchema = new Schema({
     },
     createdBy:{
         type:Types.ObjectId,
-        required:false, // to be converted to true after prototype
+        required:true, // to be converted to true after prototype
         ref:'User'
     },
     updatedBy:{

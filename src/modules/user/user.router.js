@@ -10,8 +10,8 @@ router.get('/', (req ,res)=>{
     res.status(200).json({message:"User Module"})
 })
 
-router.patch('/forgotPassword',auth(Object.values(roles)),authController.sendCode);
-router.patch('/resetPassword',auth(Object.values(roles)),authController.resetPassword);
+router.patch('/forgotPassword',authController.sendCode);
+router.patch('/resetPassword',authController.resetPassword);
 
 
 
