@@ -4,15 +4,12 @@ const productSchema = new Schema({
  
     name: {
         type: String,
-        required: true
     },
     slug: {
         type: String,
-        required: true
     },
     description: {
         type: String,
-        required: true
     },
     stock: {
         type: Number,
@@ -24,7 +21,6 @@ const productSchema = new Schema({
     },
     finalPrice: {
         type: Number,
-        required: false
     },
     discount: {
         type: Number,
@@ -44,41 +40,33 @@ const productSchema = new Schema({
     },
     mainImage: {
         type: Object,
-        required: true
     },
     subImages: {
         type: [Object]
     },
     categoryId: {
         type: Types.ObjectId,
-        required: true,
         ref: 'Category'
     },
     subCategoryId: {
         type: Types.ObjectId,
-        required: true,
         ref: 'SubCategory'
     },
     brandId: {
         type: Types.ObjectId,
-        required: true,
         ref: 'Brand'
     },
     avgRate: {
         type: Number,
-        required: false
     },
     soldItem: {
         type: Number,
-        required: false
     },
     totalAmount: {
         type: Number,
-        required: false
     },
     createdBy:{
         type:Types.ObjectId,
-        required:true, // to be converted to true after prototype
         ref:'User'
     },
     updatedBy:{

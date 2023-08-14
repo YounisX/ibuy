@@ -23,7 +23,7 @@ validation(validators.createProduct),
 productController.createProduct)
 
 
-router.put('/productId', 
+router.put('/:productId', 
 auth(['Admin']),cloudUpload().fields([
     {name:"mainImage", maxCount:1},
     {name:"subImages", maxCount:5}
