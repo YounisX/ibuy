@@ -37,6 +37,9 @@ export const validation = (schema,considerheaders=false) => {
          if(req.file||req.files){
             DataMethod.file =req.file||req.files;
          }
+         if(req.headers.authorization){
+            DataMethod.authorization = req.headers.authorization
+         }
                 const validationResult = schema.validate(DataMethod, { abortEarly: false })
 
         if (validationResult.error?.details) {
