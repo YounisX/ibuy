@@ -8,4 +8,11 @@ export const createCart = AsyncHandler(async(req,res,next)=>{
     if (!product){
         return next (new Error('invalid product id or not found'),{cause:400})
     }
+    if(product.stock < quantity || product.isDeleted ){
+        product.wishUserList.push(req.user._id)
+        await  productModel.updateOne({_id:productId},{$addToSet:{wishUserList:req.user._id}})
+        return next (new Error(`only ${product.stock} is available`),{cause:400})
+
+
+    }
 })

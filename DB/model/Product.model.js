@@ -73,6 +73,10 @@ const productSchema = new Schema({
         type:Types.ObjectId,// to be converted to true after prototype
         ref:'User'
     },
+    isDeleted:{
+        type:Boolean,
+        default:false
+    },
     wishUserList:[{type:Types.ObjectId, ref:'User'}]
 }, 
 { timestamps: true });
