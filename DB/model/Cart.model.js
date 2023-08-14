@@ -2,18 +2,17 @@ import mongoose,{model,Schema,Types} from "mongoose";
 
 const cartSchema = new Schema({
 
-    name: {
-        type: Object,
-        required: true
-    },
-    createdby: {
+    userId: {
         type: Types.ObjectId,
-        ref: 'User'
+        required: true,
+        unique:true
     },
-    updatedBy: {
-        type: Types.ObjectId,
-        ref: 'User'
-    }
+    products:[{
+        productId:{
+            type:Types.ObjectId, ref:'Product',required:ture
+        },
+        quantity:{type:Number,required : true , default:1}
+    }]
     }
 , { timestamps: true });
 
