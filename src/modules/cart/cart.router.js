@@ -9,6 +9,6 @@ const router = Router()
 
 
 
-router.post('/', auth(roles['Admin']), cartController.createCart)
+router.post('/', auth(Object.values(roles)), cartController.createCart)
 
 export default router
