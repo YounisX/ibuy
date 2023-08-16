@@ -11,4 +11,8 @@ const app = express()
 // setup port and the baseUrl
 const port = process.env.PORT || 3000
 initApp(app ,express)
-console.log(chalk.ansi256(190).bgAnsi256(140)(`Example app listening on port  ${port} `));
+app.listen(process.env.PORT,()=>{
+ console.log(chalk.ansi256(0).bgAnsi256(189)(`Example app listening on port  ${port} `));
+}) 
+
+

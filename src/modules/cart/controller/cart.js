@@ -15,7 +15,6 @@ export const createCart = AsyncHandler(async (req, res, next) => {
   //todo check if that product exist 
 
   if (product.stock < quantity || product.isDeleted) {
-    product.wishUserList.push(req.user._id);
     await productModel.updateOne(
       { _id: productId },
       { $addToSet: { wishUserList: req.user._id } }
