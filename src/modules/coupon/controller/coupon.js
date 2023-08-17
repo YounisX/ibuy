@@ -4,6 +4,9 @@ import slugify from "slugify";
 import { AsyncHandler } from "../../../utils/errorHandling.js";
 import subCategoryModel from "../../../../DB/model/SubCategory.model.js";
 import { nanoid } from "nanoid";
+
+
+
  export const createCoupon = AsyncHandler(async (req, res, next) => {
   
    const name  = req.body.name.toLowerCase();
@@ -22,6 +25,9 @@ req.body
   );
    return res.status(201).json({ message: "done", coupon });
 });
+
+
+
  export const updateCoupon = AsyncHandler(async (req, res, next) => {
   const { subCategoryId, couponId } = req.params;
   const coupon = await couponModel.findOne({ _id: couponId, subCategoryId });
