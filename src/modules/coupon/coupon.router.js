@@ -12,8 +12,10 @@ router.get('/', (req, res) => {
 });
 
 router.post('/create',
+validation(validators.headers,true),
+auth([roles.Admin]),
   cloudUpload(fileValidation.image).single('image'),
-  validation(validators.createCoupon),
+validation(validators.createCoupon),  
   couponController.createCoupon
 );
 

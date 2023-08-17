@@ -13,6 +13,7 @@ import { nanoid } from "nanoid";
   if (await couponModel.findOne({ name })) {
     return next(new Error("Duplicated title", { cause: 409 }));
   }
+
   if(req.file){
     const { public_id, secure_url } = await cloudinary.uploader.upload(
       req.file.path,

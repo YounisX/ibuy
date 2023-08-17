@@ -26,19 +26,21 @@ export const generalFields = {
         originalname: joi.string().required(),
         fieldname: joi.string().required()
 
-    })
+ 
+    }),
+    headers:joi.string().required()
 }
 
 
-export const validation = (schema,considerheaders=false) => {
+export const validation = (schema,considerHeaders=false) => {
     return (req, res, next) => {
 
  
-         const DataMethod = {...req.body,...req.params,...req.query}
+         let DataMethod = {...req.body,...req.params,...req.query}
          if(req.file||req.files){
             DataMethod.file =req.file||req.files;
          }
-         if(req.headers.authorization){
+         if(req.headers.authorization && considerHeaders ){
             DataMethod.authorization = req.headers.authorization
          }
                 const validationResult = schema.validate(DataMethod, { abortEarly: false })
