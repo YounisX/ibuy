@@ -1,11 +1,11 @@
 import mongoose, { model, Schema, Types } from "mongoose";
 
-const cartSchema = new Schema(
+const orderSchema = new Schema(
   {
     userId: {
       type: Types.ObjectId,
       required: true,
-      unique: true,
+      ref:'User'
     },
 note:String,
     products: [
@@ -17,10 +17,10 @@ note:String,
         finalPrice: { type: Number, default: 1, required: true },
       },
     ],
-subtotal:{type:Number,required:true,default:1}
+  subtotal:{type:Number,required:true}
 ,
     couponId:{type:Types.ObjectId,ref:"Coupon"},
-    totalPrice:{type:Number,required:true,default:1},
+    totalPrice:{type:Number,required:true},
     status:{type:String,default:"placed",enum:["waitPayment","placed","cancelled","delivered","rejected","onWay"]},
     paymentType:{type:String,default:"cash",enum:["cash","card"]},
     reason:String,        
@@ -29,6 +29,5 @@ subtotal:{type:Number,required:true,default:1}
   
   { timestamps: true }
 );
-
-const CartModel = mongoose.models.Cart || model("Cart", cartSchema);
-export default CartModel;
+const orderModel = mongoose.models.Order || model("Order", orderSchema);
+export default orderModel;

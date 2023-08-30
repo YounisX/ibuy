@@ -5,7 +5,7 @@ const cartSchema = new Schema({
     userId: {
         type: Types.ObjectId,
         required: true,
-        unique:true
+        unique:true                                    
     },
     products:[{
         productId:{
@@ -16,5 +16,5 @@ const cartSchema = new Schema({
     }
 , { timestamps: true });
 
-const CartModel = mongoose.models.Cart||model('Cart',cartSchema);
-export default CartModel; 
+const cartModel = mongoose.models.Cart||model('Cart',cartSchema);
+export default cartModel; 

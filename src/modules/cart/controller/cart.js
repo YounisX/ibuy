@@ -2,17 +2,17 @@ import { AsyncHandler } from "../../../utils/errorHandling.js";
 import productModel from "./../../../../DB/model/Product.model.js";
 import CartModel from "./../../../../DB/model/Cart.model.js";
 
+
 export const createCart = AsyncHandler(async (req, res, next) => {
   const { quantity, productId } = req.body;
 
-  //todo check if that product exist 
+  //todo check if that product exist
   const product = await productModel.findById(productId);
   if (!product) {
     return next(new Error("invalid product id or not found"), { cause: 400 });
   }
 
-
-  //todo check if that product exist 
+  //todo check if that product exist
 
   if (product.stock < quantity || product.isDeleted) {
     await productModel.updateOne(
@@ -24,7 +24,7 @@ export const createCart = AsyncHandler(async (req, res, next) => {
     });
   }
 
-  //todo check if the user has a CART 
+  //todo check if the user has a CART
 
   const cart = await CartModel.findOne({ userId: req.user._id });
   if (!cart) {
@@ -45,10 +45,9 @@ export const createCart = AsyncHandler(async (req, res, next) => {
     }
   }
 
-
 if(matchProduct==false){
     cart.products.push({productId,quantity})
 }
   await cart.save();
   return res.json({ cart });
-});
+})

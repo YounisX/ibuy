@@ -2,7 +2,7 @@ import joi from 'joi'
 import { generalFields } from '../../middleware/validation.js';
 
 export const createProduct = joi.object({
-    authorization:joi.string().required(),
+    // authorization:joi.string().required(),
     name : joi.string().min(2).max(150).required(),
     description: joi.string().min(2).max(150000).required(),
     price:joi.number().integer().positive().min(1).required(),

@@ -1,6 +1,8 @@
 import path from 'path'
 import { fileURLToPath } from 'url'
 import dotenv from 'dotenv'
+
+
 //set directory dirname 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 dotenv.config({ path: path.join(__dirname, './config/.env') })
@@ -12,7 +14,7 @@ const app = express()
 const port = process.env.PORT || 3000
 initApp(app ,express)
 app.listen(process.env.PORT,()=>{
- console.log(chalk.ansi256(0).bgAnsi256(189)(`Example app listening on port  ${port} `));
+ console.log(chalk.ansi256(0).bgAnsi256(112)(`Example app listening on port  ${port} `));
 }) 
 
 
