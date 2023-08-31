@@ -3,7 +3,6 @@ import mongoose, {Schema,model,Types} from "mongoose";
 const couponSchema = new Schema({
     name: {
         type: String,
-        required: true,
         unique: true
     },
     image: {

@@ -21,7 +21,10 @@ const categorySchema = new Schema({
         ref:'User'
     }
 
-},{timestamps:true,toJSON:{virtuals:true},toObject:{virtuals:true}})
+},
+{timestamps:true,
+toJSON:{virtuals:true},
+toObject:{virtuals:true}})
 
 categorySchema.virtual('SubCategory',{
     ref: 'SubCategory',

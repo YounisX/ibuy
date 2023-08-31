@@ -8,7 +8,19 @@ import cartModel from './../../../../DB/model/Cart.model.js';
 
 export const createOrder = AsyncHandler( async(req,res,next)=>{
 
-const { products,address,phone,name,paymentType,note} = req.body; 
+const {address,phone,name,paymentType,note} = req.body; 
+
+if(!req.body.products){
+    const cart = await CartModel.findOne({userId:req.user._id})
+
+if(!cart?.products?.length){
+    return next(new Error("Empty Cart", { cause: 400 }));
+}
+req.body.isCart = true;
+req.body.products = cart.products;
+
+}
+
 
 if(name){
 const coupon  = await CouponModel.findOne({name:name.toLowerCase()});
@@ -30,7 +42,7 @@ req.body.coupon = coupon;
 const finalProductList = []
 const productsId  = []
 let subtotal = 0;
-for (const product of products){
+for (let product of req.body.products){
 const checkProduct =  await productModel.findOne({
     _id: product.productId,
     stock:{$gte:product.quantity},
@@ -40,6 +52,11 @@ const checkProduct =  await productModel.findOne({
 if(!checkProduct){
 return next(new Error("product not found or quantity order more than the stock", { cause: 400 }));
 }
+
+if(req.body.isCart){
+    product=product.toObject();
+}
+
 productsId.push(product.productId);
 product.name = checkProduct.name;
 product.unitPrice = checkProduct.finalPrice;
@@ -66,7 +83,7 @@ const order = await orderModel.create({
 })
 
 // decrease product stock 
-for(const product of products){
+for(const product of req.body.products){
 await productModel.updateOne({_id:product.productId},{$inc:{stock:-product.quantity}})
 }
 //add users that used the coupon
@@ -76,15 +93,20 @@ if(req.body.coupon){
 }
     
 //clear items selected in cart 
-await CartModel.updateOne({userId:req.user._id},{
-$pull:{
-    products:{
-    productId:{$in:productsId}
-    }
-}})
+if(req.body.isCart){
+await CartModel.updateOne({userId:req.user._id},{products:[]}) 
+}
+else{
+    await CartModel.updateOne({userId:req.user._id},{
+        $pull:{
+            products:{
+            productId:{$in:productsId}
+            }
+        }})
+
 
 return res.json(order);
-
+}
 })
 ; 
  

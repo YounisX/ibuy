@@ -12,13 +12,19 @@ import subcategoryRouter from './modules/subcategory/subcategory.router.js'
 import userRouter from './modules/user/user.router.js'
 import { globalErrorHandling } from './utils/errorHandling.js'
 
-
+import bodyParser from 'body-parser'
 
 const initApp = (app, express) => {
     app.use(morgan('dev'))
     //convert Buffer Data
     app.use(express.json({}))
+    
+   // Add the body-parser middleware
+      // Now you should be able to access req.body.products as an object
     //Setup API Routing 
+   app.use(bodyParser.json());
+
+
     app.use(`/auth`, authRouter)
     app.use(`/user`, userRouter)
     app.use(`/product`, productRouter)
