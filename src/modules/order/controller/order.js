@@ -63,7 +63,6 @@ product.unitPrice = checkProduct.finalPrice;
 product.finalPrice =product.quantity*checkProduct.finalPrice.toFixed(2);
 finalProductList.push(product);
 subtotal += product.finalPrice;
-console.log(productsId);
 
 }
 
@@ -79,7 +78,7 @@ const order = await orderModel.create({
     couponId:req.body.coupon?._id,
     totalPrice: subtotal -(subtotal *((req.body.coupon?.discount||0)/100)).toFixed(2),
     paymentType,
-    status:paymentType == 'card' ? "placed": 'waitpayment' 
+status:paymentType == 'cash' ? "placed": 'waitpayment' 
 })
 
 // decrease product stock 
@@ -110,3 +109,69 @@ return res.json(order);
 })
 ; 
  
+
+export const cancelOrder = AsyncHandler( async(req,res,next)=>{ 
+const{orderId,reason}=req.params;
+
+    const order = await orderModel.findOne({_id:orderId,userId:req.user._id})
+if(!order){
+    return next(new Error("order not found", { cause: 400 }));
+}
+console.log(order.status);
+if((order?.status !='placed' && order.paymentType =='cash') || (order?.status !='waitPayment' && order.paymentType=='card')){
+return next(new Error(`cannot cancel order after changed to ${order.status}`, { cause: 400 }));
+    }
+const cancelOrder = await orderModel.updateOne({_id:orderId},{status:'canceled',reason,updatedBy:req.user._id})
+
+if(!cancelOrder.matchedCount){
+return next(new Error("failed to cancel order", { cause: 400 }));
+}
+//decrease product stock 
+
+for (const product of order.products){
+await productModel.updateOne({_id:product.productId},{$inc:{stock:product.quantity}})
+    //push user coupon usedBy
+if(order.couponId){
+    await CouponModel.updateOne({_id:order.couponId},{$pull:{usedBy:req.user._id}})
+}
+    
+    
+}
+
+
+return res.json({message:"done"});
+}
+
+
+)
+
+export const updateOrderStatusByAdmin = AsyncHandler(async (req, res, next) => {
+    const { orderId } = req.params;
+  
+    // Check if the order exists
+    const order = await orderModel.findOne({ _id: orderId });
+    if (!order) {
+      return next(new Error("Order not found", { cause: 400 }));
+    }
+
+
+    // Check if any product in the order is canceled
+
+const isAnyProductCanceled = order.status === 'canceled';
+    console.log(isAnyProductCanceled);
+
+if (isAnyProductCanceled) {
+      return next(new Error("Cannot update order status. Some products are canceled.", { cause: 400 }));
+    }
+    // Update the order status to 'delivered'
+    const updatedOrder = await orderModel.updateOne(
+      { _id: orderId },
+      { status: 'delivered' }
+    );
+  
+    if (!updatedOrder.matchedCount) {
+      return next(new Error("Failed to update order status", { cause: 400 }));
+    }
+  
+    return res.json({ message: "Order status updated to 'delivered'" });
+  });

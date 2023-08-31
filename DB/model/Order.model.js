@@ -21,7 +21,7 @@ note:String,
 ,
     couponId:{type:Types.ObjectId,ref:"Coupon"},
     totalPrice:{type:Number,required:true},
-    status:{type:String,default:"placed",enum:["waitPayment","placed","cancelled","delivered","rejected","onWay"]},
+    status:{type:String,default:"placed",enum:["waitPayment","placed","canceled","delivered","rejected","onWay"]},
     paymentType:{type:String,default:"cash",enum:["cash","card"]},
     reason:String,        
 
