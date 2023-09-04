@@ -79,7 +79,16 @@ const productSchema = new Schema({
     },
     wishUserList:[{type:Types.ObjectId, ref:'User'}]
 }, 
-{ timestamps: true });
+{ timestamps: true,
+toJSON:{virtuals:true},
+toObject:{virtuals:true}});
+
+
+productSchema.virtual('review',{
+    ref:'Review',
+localField:'_id', 
+foreignField:'productId'
+})
 
 const productModel = mongoose.models.Product||model('Product', productSchema)
 export default productModel ;

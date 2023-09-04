@@ -5,14 +5,13 @@ import { cloudUpload } from "../../utils/multer.js";
 import auth, { roles } from "../../middleware/auth.js";
 import { validation } from "../../middleware/validation.js";
 import * as validators from './product.validation.js'
+import reviewRouter from '../reviews/reviews.router.js'
 const router = Router()
 
 
+router.use("/:productId/review",reviewRouter);
 
-
-router.get('/', (req ,res)=>{
-    res.status(200).json({message:"product Module"})
-})
+router.get('/product',productController.getAllProducts)
 
 router.post('/create', 
 auth(['Admin']),cloudUpload().fields([

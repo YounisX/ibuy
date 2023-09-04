@@ -9,6 +9,22 @@ import { AsyncHandler } from "../../../utils/errorHandling.js";
 
 
 
+
+
+
+
+export const getAllProducts = AsyncHandler( async (req, res, next) => {
+  
+const product = await productModel.find({}).populate([{path:'review'}])
+if(!product){
+  return next(new Error("product not found", { cause: 400 }));
+}
+return res.status(200).json({message:'done',product})
+
+})
+
+
+
 export const createProduct = AsyncHandler( async (req, res, next) => {
   const { name, catergoryId, subCategoryId, brandId,price,discount } = req.body;
 
