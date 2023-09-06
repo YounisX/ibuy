@@ -7,12 +7,12 @@ export const createProduct = joi.object({
     description: joi.string().min(2).max(150000).required(),
     price:joi.number().integer().positive().min(1).required(),
     price:joi.number().positive().min(1).required(),
-    discount:joi.number().positive().min(0).max(100),
+    discount:joi.number().min(0).max(100),
     stock:joi.number().positive().min(0).max(15000).required(),
 
     file:{
         mainImage:joi.array().length(1).items(generalFields.file.required()).required(),
-        subImages:joi.array().items(generalFields.file.required()).min(1).max(5).required(),
+        subImages:joi.array().items(generalFields.file.required()).min(1).max(5),
     },
     categoryId:generalFields.id,
     subCategoryId:generalFields.id,

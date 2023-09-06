@@ -6,6 +6,7 @@ import cloudinary from './../../../utils/cloudinary.js';
 import { nanoid } from "nanoid";
 import productModel from './../../../../DB/model/Product.model.js';
 import { AsyncHandler } from "../../../utils/errorHandling.js";
+import { paginate } from "../../../utils/pagination.js";
 
 
 
@@ -15,7 +16,38 @@ import { AsyncHandler } from "../../../utils/errorHandling.js";
 
 export const getAllProducts = AsyncHandler( async (req, res, next) => {
   
-const product = await productModel.find({}).populate([{path:'review'}])
+  let {page,size} = req.query; 
+
+const {skip,limit} = paginate(page,size);
+
+
+//making array with sent params only  
+const excluteQuereyParams = ['page','size','sort','search','fields']; 
+const filterQuery = {...req.query};
+
+excluteQuereyParams.forEach(param=>
+  delete filterQuery[param]
+)
+console.log(filterQuery);
+console.log(JSON.parse(JSON.stringify(filterQuery).replace(/(gt|gte|lt|lte|in|nin|eq|neq)/g,match=>`$${match}`)));
+console.log(req.query);
+
+
+const mongooseQuery = productModel.find(JSON.parse(JSON.stringify(filterQuery).replace(/(gt|gte|lt|lte|in|nin|eq|neq)/g,match=>`$${match}`))
+).populate([{path:'review'}]).sort(req.query.sort.replaceAll(","," "))
+
+mongooseQuery.find({
+  $or:[
+    {name:{$regex:req.query.search,$options:'i'}},
+    {description:{$regex:req.query.search,$options:'i'}}
+  ]
+})
+mongooseQuery.select(req.query.fields.replaceAll(","," "))
+
+mongooseQuery.limit(limit).skip(skip);
+
+const product = await mongooseQuery
+
 if(!product){
   return next(new Error("product not found", { cause: 400 }));
 }
@@ -27,6 +59,10 @@ return res.status(200).json({message:'done',product})
 
 export const createProduct = AsyncHandler( async (req, res, next) => {
   const { name, catergoryId, subCategoryId, brandId,price,discount } = req.body;
+
+if(await productModel.findOne({name})){
+  return next(new Error("product already exist", { cause: 400 }))}
+
 
   //checking if this products belongs to a category
   const category = await categoryModel.findOne({
