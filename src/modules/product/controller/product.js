@@ -20,39 +20,8 @@ export const getAllProducts = AsyncHandler( async (req, res, next) => {
 const apiFeature = new ApiFeature(productModel.find(),req.query).paginate().filter().sort().search() ;
 const product =await apiFeature.mongooseQuery
 
-
-
-
-
-
-
-  
-//   let {page,size} = req.query; 
-
-// const {skip,limit} = paginate(page,size);
-
-
-
-
-// console.log(filterQuery);
-// console.log(JSON.parse(JSON.stringify(filterQuery).replace(/(gt|gte|lt|lte|in|nin|eq|neq)/g,match=>`$${match}`)));
-// console.log(req.query);
-
-
-// const mongooseQuery = productModel.find(JSON.parse(JSON.stringify(filterQuery).replace(/(gt|gte|lt|lte|in|nin|eq|neq)/g,match=>`$${match}`))
-// ).populate([{path:'review'}]).sort(req.query.sort.replaceAll(","," ")).sort.replaceAll(","," "))
-
-// mongooseQuery.find({
-//   $or:[
-//     {name:{$regex:req.query.search,$options:'i'}},
-//     {description:{$regex:req.query.search,$options:'i'}}
-//   ]
-// })
 // mongooseQuery.select(req.query.fields.replaceAll(","," "))
 
-// mongooseQuery.limit(limit).skip(skip);
-
-// const product = await mongooseQuery
 
 if(!product){
   return next(new Error("product not found", { cause: 400 }));
