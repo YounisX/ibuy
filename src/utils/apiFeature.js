@@ -34,6 +34,15 @@ this.mongooseQuery.sort(this.queryData.sort?.replaceAll(","," ")) ;
 return this ; 
 }
 
+search(){
+this.mongooseQuery.find({
+  $or:[
+{name:{$regex:this.queryData.search,$options:'i'}},
+{description:{$regex:this.queryData.search,$options:'i'}}
+  ]
+})
+return this ; 
+}
 
 }
 

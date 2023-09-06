@@ -17,7 +17,7 @@ import ApiFeature from "../../../utils/apiFeature.js";
 
 export const getAllProducts = AsyncHandler( async (req, res, next) => {
 
-const apiFeature = new ApiFeature(productModel.find(),req.query).paginate().filter().sort();
+const apiFeature = new ApiFeature(productModel.find(),req.query).paginate().filter().sort().search() ;
 const product =await apiFeature.mongooseQuery
 
 
