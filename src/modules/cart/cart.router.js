@@ -10,7 +10,7 @@ const router = Router()
 
 
 router.post('/', auth(Object.values(roles)), cartController.createCart)
-router.delete('/select', auth(Object.values(roles)), cartController.deleteItems)
+router.patch('/delete', auth(Object.values(roles)), cartController.deleteItems)
 router.put('/clear', auth(Object.values(roles)), cartController.clearCart)
 
 export default router
