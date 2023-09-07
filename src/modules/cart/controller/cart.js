@@ -51,3 +51,18 @@ if(matchProduct==false){
   await cart.save();
   return res.json({ cart });
 })
+
+
+export const clearCart = AsyncHandler(async (req, res, next) => {
+  //todo check if the user has a CART
+  const cart = await CartModel.findOne({ userId: req.user._id });
+  if (!cart) {
+    return next(new Error("Cart not found"), { cause: 404 });
+  }
+
+  // Clear the products array in the cart
+  cart.products = [];
+
+  await cart.save();
+  return res.json({ cart });
+});

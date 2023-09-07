@@ -127,7 +127,7 @@ console.log(req.body.finalPrice);
 
 }
 
-                                // discount and apply final price
+// discount and apply final price
 req.body.paymentPrice = req.body.finalPrice ;                      
 
 
