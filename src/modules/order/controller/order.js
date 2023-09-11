@@ -21,7 +21,6 @@ req.body.products = cart.products;
 
 }
 
-
 if(name){
 const coupon  = await CouponModel.findOne({name:name.toLowerCase()});
 if(!coupon){
@@ -78,7 +77,7 @@ const order = await orderModel.create({
     couponId:req.body.coupon?._id,
     totalPrice: subtotal -(subtotal *((req.body.coupon?.discount||0)/100)).toFixed(2),
     paymentType,
-status:paymentType == 'cash' ? "placed": 'waitpayment' 
+status:paymentType == 'cash' ? "placed": 'waitPayment' 
 })
 
 // decrease product stock 
@@ -104,8 +103,12 @@ else{
         }})
 
 
-return res.json(order);
 }
+
+
+
+return res.json(order);
+
 })
 ; 
  
