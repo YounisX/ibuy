@@ -4,7 +4,7 @@ import { AsyncHandler } from './../../../utils/errorHandling.js';
 import orderModel from './../../../../DB/model/Order.model.js';
 import CartModel from './../../../../DB/model/Cart.model.js';
 import cartModel from './../../../../DB/model/Cart.model.js';
-
+import createInvoice from '../../../utils/pdf.js';
 
 export const createOrder = AsyncHandler( async(req,res,next)=>{
 
@@ -106,6 +106,22 @@ else{
 }
 
 
+const invoice = {
+    shipping: {
+    name: req.user.userName.toLowerCase(),
+    address: req.user.address,
+    city: "Cairo",
+    state: "Cairo",
+    country: "Egypt",
+    postal_code: 12084
+  },
+items: order.products,  
+subtotal:subtotal,
+total: order.totalPrice,
+  invoice_nr: order._id
+};
+
+await createInvoice(invoice, "invoice.pdf");
 
 return res.json(order);
 

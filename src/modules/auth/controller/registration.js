@@ -541,7 +541,7 @@ if(!user.confirmEmail){
   if (!isPasswordValid) {
     return next(new Error("Invalid email or password.", { cause: 401 }));
   }
-  const tokenPayload = { userId: user._id, role: user.role };
+  const tokenPayload = { userId: user._id, role: user.role,name:user.userName };
   const token = generateToken({payload:tokenPayload, signature:process.env.TOKEN_SIGNATURE}, {
     expiresIn: 60*30
   });

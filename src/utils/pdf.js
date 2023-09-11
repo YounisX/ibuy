@@ -1,7 +1,7 @@
 import fs from "fs";
 import PDFDocument from "pdfkit";
 
-function createInvoice(invoice, path) {
+async function createInvoice(invoice, path) {
   let doc = new PDFDocument({ size: "A4", margin: 50 });
 
   generateHeader(doc);
@@ -12,25 +12,22 @@ function createInvoice(invoice, path) {
   doc.end();
   doc.pipe(fs.createWriteStream(path));
 }
- 
+
 function generateHeader(doc) {
   doc
     .image("logo.png", 50, 45, { width: 50 })
     .fillColor("#444444")
     .fontSize(20)
-    .text("ACME Inc.", 110, 57)
+    .text("iBuy", 110, 57)
     .fontSize(10)
-    .text("ACME Inc.", 200, 50, { align: "right" })
-    .text("123 Main Street", 200, 65, { align: "right" })
-    .text("New York, NY, 10025", 200, 80, { align: "right" })
+    .text("iBuy", 200, 50, { align: "right" })
+    .text("Ahmed Fakhry st", 200, 65, { align: "right" })
+    .text("Nasr City", 200, 80, { align: "right" })
     .moveDown();
 }
 
 function generateCustomerInformation(doc, invoice) {
-  doc
-    .fillColor("#444444")
-    .fontSize(20)
-    .text("Invoice", 50, 160);
+  doc.fillColor("#444444").fontSize(20).text("Invoice", 50, 160);
 
   generateHr(doc, 185);
 
@@ -46,7 +43,7 @@ function generateCustomerInformation(doc, invoice) {
     .text(formatDate(new Date()), 150, customerInformationTop + 15)
     .text("Balance Due:", 50, customerInformationTop + 30)
     .text(
-      formatCurrency(invoice.subtotal - invoice.paid),
+      formatCurrency(invoice.total),
       150,
       customerInformationTop + 30
     )
@@ -67,6 +64,7 @@ function generateCustomerInformation(doc, invoice) {
     .moveDown();
 
   generateHr(doc, 252);
+
 }
 
 function generateInvoiceTable(doc, invoice) {
@@ -78,7 +76,6 @@ function generateInvoiceTable(doc, invoice) {
     doc,
     invoiceTableTop,
     "Item",
-    "Description",
     "Unit Cost",
     "Quantity",
     "Line Total"
@@ -92,11 +89,10 @@ function generateInvoiceTable(doc, invoice) {
     generateTableRow(
       doc,
       position,
-      item.item,
-      item.description,
-      formatCurrency(item.amount / item.quantity),
+     item.name,
+  formatCurrency(item.unitPrice*100),
       item.quantity,
-      formatCurrency(item.amount)
+  formatCurrency(item.finalPrice*100)
     );
 
     generateHr(doc, position + 20);
@@ -110,7 +106,7 @@ function generateInvoiceTable(doc, invoice) {
     "",
     "Subtotal",
     "",
-    formatCurrency(invoice.subtotal)
+    formatCurrency(invoice.subtotal*100)
   );
 
   const paidToDatePosition = subtotalPosition + 20;
@@ -119,13 +115,13 @@ function generateInvoiceTable(doc, invoice) {
     paidToDatePosition,
     "",
     "",
-    "Paid To Date",
+"total",
     "",
-    formatCurrency(invoice.paid)
+formatCurrency(invoice.total*100)
   );
 
   const duePosition = paidToDatePosition + 25;
-  doc.font("Helvetica-Bold");
+  doc.font("Helvetica-Bold"); 
   generateTableRow(
     doc,
     duePosition,
@@ -152,28 +148,25 @@ function generateFooter(doc) {
 function generateTableRow(
   doc,
   y,
-  item,
-  description,
-  unitCost,
+  name,
+  unitPirce,
   quantity,
-  lineTotal
+  finalPrice,
+  subtotal,
+  total
 ) {
   doc
     .fontSize(10)
-    .text(item, 50, y)
-    .text(description, 150, y)
-    .text(unitCost, 280, y, { width: 90, align: "right" })
+    .text(name, 50, y)
+    .text(unitPirce, 280, y, { width: 90, align: "right" })
     .text(quantity, 370, y, { width: 90, align: "right" })
-    .text(lineTotal, 0, y, { align: "right" });
+    .text(finalPrice, 0, y, { align: "right" })
+    .text(subtotal, 0, y, { align: "right" })
+    .text(total, 0, y, { align: "right" });
 }
 
 function generateHr(doc, y) {
-  doc
-    .strokeColor("#aaaaaa")
-    .lineWidth(1)
-    .moveTo(50, y)
-    .lineTo(550, y)
-    .stroke();
+  doc.strokeColor("#aaaaaa").lineWidth(1).moveTo(50, y).lineTo(550, y).stroke();
 }
 
 function formatCurrency(cents) {
@@ -188,4 +181,4 @@ function formatDate(date) {
   return year + "/" + month + "/" + day;
 }
 
-export default createInvoice ; 
+export default createInvoice;
