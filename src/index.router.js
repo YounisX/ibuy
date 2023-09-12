@@ -24,7 +24,9 @@ const initApp = (app, express) => {
     //Setup API Routing 
    app.use(bodyParser.json());
 
-
+app.use('/',(req,res,next)=>{
+return res.status(200).json({message:"welcome to ibuy API"})
+})
     app.use(`/auth`, authRouter)
     app.use(`/user`, userRouter)
     app.use(`/product`, productRouter)
@@ -38,7 +40,7 @@ const initApp = (app, express) => {
 
 
     app.all('*', (req, res, next) => {
-        res.send("In-valid Routing Plz check url  or  method")
+        res.status(404).send("In-valid Routing Plz check url  or  method")
     })
     app.use(globalErrorHandling);
     connectDB()
