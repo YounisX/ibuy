@@ -177,7 +177,6 @@ export const updateOrderStatusByAdmin = AsyncHandler(async (req, res, next) => {
     // Check if any product in the order is canceled
 
 const isAnyProductCanceled = order.status === 'canceled';
-    console.log(isAnyProductCanceled);
 
 if (isAnyProductCanceled) {
       return next(new Error("Cannot update order status. Some products are canceled.", { cause: 400 }));

@@ -5,7 +5,6 @@ import { AsyncHandler } from "../../../utils/errorHandling.js";
 
 export const createBrand = AsyncHandler(async(req,res,next)=>{
     const name = req.body.name.toLowerCase();
-    console.log(name);
     // const {createdBy}= req.params;
     const findBrand= await brandModel.findOne({name});
 

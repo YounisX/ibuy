@@ -19,7 +19,6 @@ export const sendCode = AsyncHandler(async (req, res, next) => {
       ? res.json({ user })
       : next(new Error("this email doesnt exist"), { cause: 404 });
   }
-  console.log({ user });
   //sending email
   const html = `<!DOCTYPE html>
      <html>
@@ -240,7 +239,6 @@ export const sendCode = AsyncHandler(async (req, res, next) => {
 
 export const resetPassword = AsyncHandler(async (req, res, next) => {
   const { code, password,email } = req.body;
-  console.log(code);
   const user = await userModel.findOne({ email});
   if (!user) {
     return next(new Error("this email doesnt exist"), { cause: 404 });
@@ -252,7 +250,6 @@ export const resetPassword = AsyncHandler(async (req, res, next) => {
 
   const hashPassword = hash({ plaintext: password });
 
-  // console.log(hashPassword);
   const compareWithOldPassword = compare({
     plaintext: password,
     hashValue: user.password,

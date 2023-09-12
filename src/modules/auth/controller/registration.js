@@ -246,7 +246,6 @@ export const signup = AsyncHandler(async (req, res, next) => {
   }
   //todo Hashing password
   const hashPassword = hash({ plaintext: password });
-  console.log(hashPassword);
   
    //todo creating User ; 
 
@@ -262,7 +261,7 @@ export const confirmEmail  = AsyncHandler( async(req,res,next)=>{
   if(!email){
     return next( new Error('invalid Token',{cause:400}))
   }
-  const user = await userModel.updateOne({email},{confirmEmail:true},{new:true});
+const user = await userModel.updateOne({email:email.toLowerCase()},{confirmEmail:true},{new:true});
   if(user.matchedCount){
     console.log(user);
 return res.redirect(`${process.env.LINK}`)

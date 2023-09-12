@@ -13,7 +13,6 @@ if(!order){
 return next(new Error("cannot review order before recieveing", { cause: 400 }));
 }
 const checkReview = await reviewModel.findOne({createdBy:req.user._id,productId,orderId:order._id})
-console.log(checkReview);
 if(checkReview){
 return next(new Error("Already Reviewed", { cause: 400 }));
 }

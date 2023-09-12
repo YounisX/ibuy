@@ -114,7 +114,6 @@ if(name){
 if(price && discount)
 {
   req.body.finalPrice = Number.parseFloat(price-(price * discount) / 100).toFixed(2) //finding if there's a
-  console.log(req.body.finalPrice);
 
 }
 else if (price) {
@@ -123,7 +122,6 @@ else if (price) {
 }
 else if (discount) {
   req.body.finalPrice = Number.parseFloat(product.price - (product.price * discount) / 100).toFixed(2) //finding if there's a
-console.log(req.body.finalPrice);
 
 }
 

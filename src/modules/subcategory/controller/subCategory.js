@@ -57,13 +57,10 @@ export const updatesubCategory = AsyncHandler(async (req, res, next) => {
  await subCategory.save();
  return res.json({subCategory})
 });
+
+
+
 export const getsubCategory = AsyncHandler(async (req, res, next) => {
 
-    const { subCategoryId } = req.body;
-    console.log(subCategoryId);
-    console.log({url:req.originalUrl});
-//   const subCategory = await subCategoryModel.findById(req.params.subCategoryId);
 
-
-//  return res.json({subCategory})
 });

@@ -1,6 +1,7 @@
 import path from 'path'
 import { fileURLToPath } from 'url'
 import dotenv from 'dotenv'
+import cors from 'cors'
 
 
 //set directory dirname 
@@ -13,7 +14,7 @@ const app = express()
 // setup port and the baseUrl
 const port = process.env.PORT || 3000
 initApp(app ,express)
-
+app.use(cors({})) //allow access from any
 
 
 
