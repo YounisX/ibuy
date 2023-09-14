@@ -3,7 +3,6 @@ import userModel from "./../../../../DB/model/User.model.js";
 import { generateToken, verifyToken } from "./../../../utils/GenerateAndVerifyToken.js";
 import sendEmail from "../../../utils/email.js";
 import { hash, compare } from "../../../utils/HashAndCompare.js";
-import { customAlphabet, nanoid } from "nanoid";
 
 export const signup = AsyncHandler(async (req, res, next) => {
   const { userName, email, password } = req.body;
