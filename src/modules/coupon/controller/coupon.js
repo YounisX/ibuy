@@ -2,8 +2,6 @@ import cloudinary from "./../../../utils/cloudinary.js";
 import couponModel from "../../../../DB/model/Coupon.model.js";
 import slugify from "slugify";
 import { AsyncHandler } from "../../../utils/errorHandling.js";
-import subCategoryModel from "../../../../DB/model/SubCategory.model.js";
-import { nanoid } from "nanoid";
 
 
 

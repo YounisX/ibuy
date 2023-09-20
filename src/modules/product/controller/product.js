@@ -6,7 +6,6 @@ import cloudinary from './../../../utils/cloudinary.js';
 import { nanoid } from "nanoid";
 import productModel from './../../../../DB/model/Product.model.js';
 import { AsyncHandler } from "../../../utils/errorHandling.js";
-import { paginate } from "../../../utils/pagination.js";
 import ApiFeature from "../../../utils/apiFeature.js";
 
 
