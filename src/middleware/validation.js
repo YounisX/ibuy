@@ -24,7 +24,7 @@ export const generalFields = {
         mimetype: joi.string().required(),
         encoding: joi.string().required(),
         originalname: joi.string().required(),
-        fieldname: joi.string().required()
+        fieldname: joi.string().required() 
 
  
     }),
