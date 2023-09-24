@@ -5,21 +5,16 @@ import cors from 'cors'
 import express from 'express'
 // import initApp from './src/index.router.js'
 import chalk from 'chalk'
-import { graphqlHTTP } from 'express-graphql'
+import initApp from './src/index.router.js'
 const app = express()
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 dotenv.config({ path: path.join(__dirname, './config/.env') })
 
 
-import { GraphQLNonNull, GraphQLObjectType, GraphQLSchema, GraphQLString } from 'graphql'
-
+initApp(app,express)
 
 
 const port = process.env.PORT || 3000
-app.use('/graphql', graphqlHTTP({schema,graphiql:true}));
-
-
-app.get('/sayHello', (req, res) => res.send('Hello World!'))
 
 
 app.listen(process.env.PORT,()=>{
