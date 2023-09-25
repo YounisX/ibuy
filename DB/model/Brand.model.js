@@ -10,7 +10,7 @@ const brandSchema = new Schema({
         required: true 
     },
     name: {
-        type: Object,
+        type: String,
         required: true
     },
     createdby: {

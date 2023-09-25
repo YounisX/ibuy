@@ -6,7 +6,8 @@ export const productSchema = new GraphQLSchema({
         name:"productType",
         description:"",
         fields:{
-            products:productController.products
+            products:productController.products,
+            productbyId:productController.productById
           
         }
     })
