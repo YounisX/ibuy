@@ -1,6 +1,7 @@
 import {
   GraphQLFloat,
   GraphQLID,
+  GraphQLInt,
   GraphQLList,
   GraphQLNonNull,
   GraphQLObjectType,
@@ -27,3 +28,28 @@ resolve: async (parent, args) => {
     return product;
   },
 };
+
+export const updateStock = {
+  type: productType,
+  args:{
+    id:{type: new GraphQLNonNull(GraphQLID)},
+    stock:{type:new GraphQLNonNull(GraphQLInt)}
+  },
+  resolve:async(parent,args)=>{
+    const{id,stock} = args;
+    const product = await productModel.findOneAndUpdate(id,{stock},{new:true})
+
+    return product
+  }
+}
+export const deleteProduct = {
+  type:productType,
+  args:{
+    id:{type :new GraphQLNonNull(GraphQLID)}
+  },
+  resolve:async(parent,args)=>{
+    const {id} = args;
+    const product = await productModel.findOneAndDelete(id)
+    return product
+  }
+}

@@ -10,5 +10,12 @@ export const productSchema = new GraphQLSchema({
             productbyId:productController.productById
           
         }
+    }),
+    mutation:new GraphQLObjectType({
+        name:"productMutaion",
+        fields:{
+            updateStock: productController.updateStock,
+            deleteProduct: productController.deleteProduct
+        }
     })
 })
