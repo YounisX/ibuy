@@ -6,13 +6,16 @@ import {
   GraphQLString,
 } from "graphql";
 
-export const imageType = new GraphQLObjectType({
-  name: "imageType",
-  fields: {
-    secure_url: { type: GraphQLString },
-    public_id: { type: GraphQLString },
-  },
-});
+export function imageType(name) {
+  return new GraphQLObjectType({
+    name: name||"imageType",
+    fields: {
+      secure_url: { type: GraphQLString },
+      public_id: { type: GraphQLString },
+    },
+  });
+}
+export const sharedTypes = imageType()
 
 export const productType = new GraphQLObjectType({
   name: "products",
@@ -27,9 +30,9 @@ export const productType = new GraphQLObjectType({
     stock: { type: GraphQLString },
     color: { type: new GraphQLList(GraphQLString) },
     mainImage: {
-      type: imageType,
+      type: sharedTypes,
     },
-    subImages: { type: new GraphQLList(imageType) },
+    subImages: { type: new GraphQLList(sharedTypes) },
     subCategoryId: { type: GraphQLID },
     categoryId: { type: GraphQLID },
     brandId: {
@@ -37,7 +40,7 @@ export const productType = new GraphQLObjectType({
         name: "brandType",
         fields: {
             slug: { type: GraphQLID },
-          image: { type: imageType },
+          image: { type: sharedTypes },
           name: { type: GraphQLString },
           slug:{type:GraphQLString}
         },
