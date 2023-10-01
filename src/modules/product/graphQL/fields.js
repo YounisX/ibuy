@@ -9,6 +9,8 @@ import {
 } from "graphql";
 import productModel from "../../../../DB/model/Product.model.js";
 import { productType } from "./types.js";
+import { graphValidation } from "../../../middleware/validation.js";
+import * as validators from '../product.validation.js'
 
 export const products = {
   type: new GraphQLList(productType),
@@ -30,6 +32,7 @@ resolve: async (parent, args) => {
 };
 
 export const updateStock = {
+  
   type: productType,
   args:{
     id:{type: new GraphQLNonNull(GraphQLID)},
@@ -37,6 +40,10 @@ export const updateStock = {
   },
   resolve:async(parent,args)=>{
     const{id,stock} = args;
+
+  //validation 
+    await graphValidation(validators.updateStock,args)
+
     const product = await productModel.findOneAndUpdate(id,{stock},{new:true})
 
     return product
