@@ -51,4 +51,42 @@ const auth =  (roles=[]) => {
 )
 }
 
+export const graphAuth = async (authorization,roles=[]) => {
+//we used auth in the parameters as we don't have (req) in the graphQL query
+
+    if (!authorization?.startsWith(process.env.BEARER_KEY)) {
+        throw new Error('invalid bearer key',{cause:401})
+    }
+    const token = authorization.split(process.env.BEARER_KEY)[1]
+  
+    if (!token) {
+        throw new Error('invalid Token ',{cause:401})
+    }
+
+    const decoded = verifyToken({token})
+    if (!decoded?.userId) {
+        return res.json({ message: "In-valid token payload" })
+    }
+
+    const user = await userModel.findById(decoded.userId).select('userName email role changePasswordTime')
+    //checking if there is any changes happend to main token data like password or email update
+   if (parseInt(user.changePasswordTime?.getTime()/1000)> decoded.iat){
+    throw new Error('Token expired',{cause:400})
+   }
+
+    if (!user) {
+        return res.json({ message: "Not register account" })
+    }
+
+    if(!roles.includes(user.role)){
+        throw new Error('not authenticated user',{cause:402})
+    }
+
+    return user
+
+
+}
+
+
+
 export default auth ;

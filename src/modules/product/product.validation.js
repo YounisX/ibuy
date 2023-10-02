@@ -44,5 +44,6 @@ export const updateCategory = joi.object({
 
 export const updateStock = joi.object({
     id:generalFields.id,
-    stock:joi.number().positive().min(1).required()
+    stock:joi.number().positive().min(1).required(),
+    authorization:joi.string().required()
 }).required();
