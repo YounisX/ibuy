@@ -11,11 +11,8 @@ import reviewsRouter from './modules/reviews/reviews.router.js'
 import subcategoryRouter from './modules/subcategory/subcategory.router.js'
 import userRouter from './modules/user/user.router.js'
 import { globalErrorHandling } from './utils/errorHandling.js'
-import { graphqlHTTP } from 'express-graphql'
 
 import bodyParser from 'body-parser'
-import { GraphQLNonNull, GraphQLObjectType, GraphQLSchema, GraphQLString } from 'graphql'
-import { productSchema } from './modules/product/graphQL/schema.js'
 
 const initApp = (app, express) => {
     app.use(morgan('dev'))
@@ -40,10 +37,8 @@ const initApp = (app, express) => {
     app.use(`/order`, orderRouter)
     app.use(`/brand`, branRouter)
 
-    app.use('/graphql', graphqlHTTP({schema:productSchema,graphiql:true}));
    
    
-    app.get('/sayHello', (req, res) => res.send('Hello World!'))
 
 
 
