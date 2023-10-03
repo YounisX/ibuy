@@ -262,7 +262,6 @@ export const confirmEmail  = AsyncHandler( async(req,res,next)=>{
   }
 const user = await userModel.updateOne({email:email.toLowerCase()},{confirmEmail:true},{new:true});
   if(user.matchedCount){
-    console.log(user);
 return res.redirect(`${process.env.LINK}`)
   }
   else{

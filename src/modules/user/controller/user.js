@@ -243,7 +243,6 @@ export const resetPassword = AsyncHandler(async (req, res, next) => {
   if (!user) {
     return next(new Error("this email doesnt exist"), { cause: 404 });
   }
-  console.log(user);
   if (user.forgetCode != code) {
     return next(new Error("wrong verfication Code", { causer: 400 }));
   }

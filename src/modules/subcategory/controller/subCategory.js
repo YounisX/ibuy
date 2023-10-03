@@ -6,7 +6,6 @@ import categoryModel from "../../../../DB/model/Category.model.js";
 import { nanoid } from "nanoid";
 export const createsubCategory = AsyncHandler(async (req, res, next) => {
 const {categoryId} = req.params;
-console.log(categoryId);
 
 
   const { name } = req.body;
