@@ -27,7 +27,7 @@ auth(['Admin']),cloudUpload().fields([
     {name:"mainImage", maxCount:1},
     {name:"subImages", maxCount:5}
 ]),
-validation(validators.updateCategory),
+// validation(validators.updateCategory),
 productController.updateCategory)
 
 

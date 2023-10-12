@@ -22,11 +22,10 @@ export const createProduct = joi.object({
 
 }).required()
 export const updateCategory = joi.object({
-    authorization:joi.string().required(),
+    // authorization:joi.string().required(),
     name: joi.string().min(2).max(150),
     description: joi.string().min(2).max(150000),
-    price:joi.number().integer().positive().min(1),
-    price:joi.number().positive().min(1),
+    // price:joi.number().integer().positive().min(1).optional(),
     discount:joi.number().positive().min(0).max(100),
     stock:joi.number().positive().min(0).max(15000),
     file:{

@@ -2,45 +2,40 @@ import subCategoryModel from "./../../../../DB/model/SubCategory.model.js";
 import categoryModel from "./../../../../DB/model/Category.model.js";
 import brandModel from "./../../../../DB/model/Brand.model.js";
 import slugify from "slugify";
-import cloudinary from './../../../utils/cloudinary.js';
+import cloudinary from "./../../../utils/cloudinary.js";
 import { nanoid } from "nanoid";
-import productModel from './../../../../DB/model/Product.model.js';
+import productModel from "./../../../../DB/model/Product.model.js";
 import { AsyncHandler } from "../../../utils/errorHandling.js";
 import ApiFeature from "../../../utils/apiFeature.js";
 
+export const getAllProducts = AsyncHandler(async (req, res, next) => {
+  const apiFeature = new ApiFeature(productModel.find(), req.query)
+    .paginate()
+    .filter()
+    .sort()
+    .search();
+  const product = await apiFeature.mongooseQuery;
 
+  // mongooseQuery.select(req.query.fields.replaceAll(","," "))
 
+  if (!product) {
+    return next(new Error("product not found", { cause: 400 }));
+  }
+  return res.status(200).json({ message: "done", product });
+});
 
+export const createProduct = AsyncHandler(async (req, res, next) => {
+  const { name, catergoryId, subCategoryId, brandId, price, discount } =
+    req.body;
 
-
-
-export const getAllProducts = AsyncHandler( async (req, res, next) => {
-
-const apiFeature = new ApiFeature(productModel.find(),req.query).paginate().filter().sort().search() ;
-const product =await apiFeature.mongooseQuery
-
-// mongooseQuery.select(req.query.fields.replaceAll(","," "))
-
-
-if(!product){
-  return next(new Error("product not found", { cause: 400 }));
-}
-return res.status(200).json({message:'done',product})
-
-})
-
-
-
-export const createProduct = AsyncHandler( async (req, res, next) => {
-  const { name, catergoryId, subCategoryId, brandId,price,discount } = req.body;
-
-if(await productModel.findOne({name})){
-  return next(new Error("product already exist", { cause: 400 }))}
-
+  if (await productModel.findOne({ name })) {
+    return next(new Error("product already exist", { cause: 400 }));
+  }
 
   //checking if this products belongs to a category
   const category = await categoryModel.findOne({
-    subCategoryId,catergoryId
+    subCategoryId,
+    catergoryId,
   });
   if (!category) {
     return next(new Error("invalid category or subcategory "), { cause: 400 });
@@ -52,106 +47,143 @@ if(await productModel.findOne({name})){
     return next(new Error("invalid Brand "), { cause: 400 });
   }
 
-  req.body.slug = slugify(name, { lower: true, replacement: "-", trim: true });
+  req.body.slug = slugify(data.name, { lower: true, replacement: "-", trim: true });
 
-  req.body.finalPrice = Number.parseFloat(price - (price * discount||0) / 100).toFixed(2) //finding if there's a
-                                // discount and apply final price
-req.body.paymentPricre = req.body.finalPrice ;                      
+  req.body.finalPrice = Number.parseFloat(
+    price - (price * discount || 0) / 100
+  ).toFixed(2); //finding if there's a
+  // discount and apply final price
+  req.body.paymentPricre = req.body.finalPrice;
 
-req.body.cutomId = nanoid();
-  const {secure_url,public_id} = await cloudinary.uploader.upload(req.files.mainImage[0].path,{folder:`/${process.env.APP_NAME}/Category/SubCategory/Products/${req.body.customId}`})
-  req.body.mainImage = {secure_url,public_id} ; 
-  
-if(req.files.subImages){
-    req.body.subImages=[];
+  req.body.cutomId = nanoid();
+  const { secure_url, public_id } = await cloudinary.uploader.upload(
+    req.files.mainImage[0].path,
+    {
+      folder: `/${process.env.APP_NAME}/Category/SubCategory/Products/${req.body.customId}`,
+    }
+  );
+  req.body.mainImage = { secure_url, public_id };
+
+  if (req.files.subImages) {
+    req.body.subImages = [];
     for (const file of req.files.subImages) {
-  const {secure_url,public_id} = await cloudinary.uploader.upload(file.path,{folder:`/${process.env.APP_NAME}/Category/SubCategory/Products/${req.body.customId}`})
-        req.body.subImages.push({secure_url,public_id})
-    } 
-}
-req.body.createdBy = req.user._id;
-const product = await productModel.create(req.body);
-if(!product){ 
+      const { secure_url, public_id } = await cloudinary.uploader.upload(
+        file.path,
+        {
+          folder: `/${process.env.APP_NAME}/Category/SubCategory/Products/${req.body.customId}`,
+        }
+      );
+      req.body.subImages.push({ secure_url, public_id });
+    }
+  }
+  req.body.createdBy = req.user._id;
+  const product = await productModel.create(req.body);
+  if (!product) {
     return next(new Error("fail to create product"), { cause: 400 });
-}
-return res.json({product})
+  }
+  return res.json({ product });
+});
 
-})
-
-
-
-export const updateCategory = AsyncHandler( async (req, res, next) => {
-//todo check the product id is valid or not  
-  const {productId} = req.params; 
-  const product = await productModel.findOne({productId})
-  if(!product){
+export const updateCategory = AsyncHandler(async (req, res, next) => {
+  const { productId } = req.params;
+  const product = await productModel
+    .findOne({ productId })
+    .populate({ path: "brandId" });
+  if (!product) {
     return next(new Error("invalid product id"), { cause: 400 });
   }
-//todo destruct data from body
 
-  const { name, catergoryId, subCategoryId, brandId,price,discount } = req.body;
+  // destruct data from body
 
-//todo check the category/subcategory
+  const data = req.body;
+  console.log(data);
 
-if(catergoryId&&subCategoryId){
-if(!await subCategoryModel.findOne({_id:subCategoryId,catergoryId})){
-  return next(new Error("invalid category or subcategory id"), { cause: 400 });
-}
-}
-//todo check  brand
+  // check the category/subcategory
 
-  const brand = await brandModel.findOne({ _id: brandId });
-  if (!brand) {
-    return next(new Error("invalid Brand "), { cause: 400 });
+  if (data.catergoryId && data.subCategoryId) {
+    if (
+      !(await subCategoryModel.findOne({ _id: data.subCategoryId, catergoryId }))
+    ) {
+      return next(new Error("invalid category or subcategory id"), {
+        cause: 400,
+      });
+    }
+  }
+  // check  brand
+
+  // const brand = await brandModel.findOne({ _id: brandId });
+  // if (!brand) {
+  //   return next(new Error("invalid Brand "), { cause: 400 });
+  // }
+
+  // update slug
+
+  if (data.name) {
+    req.body.slug = slugify(data.name, {
+      lower: true,
+      replacement: "-",
+      trim: true,
+    });
   }
 
-//todo update slug
+  if (data.price !== undefined && data.discount !== undefined) {
+    req.body.finalPrice = Number.parseFloat(
+      data.price - (data.price * data.discount) / 100
+    ).toFixed(2);
+  } else if (data.price !== undefined) {
+    product.discount = Math.floor(Number.parseFloat(product.data.discount));
+    req.body.finalPrice = Number.parseFloat(
+      data.price - (data.price * product.data.discount) / 100
+    ).toFixed(2);
+  } else if (data.discount !== undefined) {
+    req.body.finalPrice = Number.parseFloat(
+      product.price - (product.data.price * data.discount) / 100
+    ).toFixed(2);
+  }
+  // discount and apply final price
+  req.body.paymentPrice = req.body.finalPrice;
 
-if(name){
-  req.body.slug = slugify(name, { lower: true, replacement: "-", trim: true });
-}
-if(price && discount)
-{
-  req.body.finalPrice = Number.parseFloat(price-(price * discount) / 100).toFixed(2) //finding if there's a
+  if (req.files?.mainImage?.legnth) {
+    const { secure_url, public_id } = await cloudinary.uploader.upload(
+      req.files.mainImage[0].path,
+      {
+        folder: `/${process.env.APP_NAME}/Category/SubCategory/Products/${product.customId}`,
+      }
+    );
+    await cloudinary.uploader.destroy(product.mainImage.public_id);
+    req.body.mainImage = { secure_url, public_id };
+  }
 
-}
-else if (price) {
-  product.discount = Math.floor(Number.parseFloat(product.discount))
-  req.body.finalPrice = Number.parseFloat(price - (price * product.discount) / 100).toFixed(2) //finding if there's 
-}
-else if (discount) {
-  req.body.finalPrice = Number.parseFloat(product.price - (product.price * discount) / 100).toFixed(2) //finding if there's a
-
-}
-
-// discount and apply final price
-req.body.paymentPrice = req.body.finalPrice ;                      
-
-
-if(req.files?.mainImage?.legnth){
-  const {secure_url,public_id} = await cloudinary.uploader.upload(req.files.mainImage[0].path,{folder:`/${process.env.APP_NAME}/Category/SubCategory/Products/${product.customId}`})
-  await cloudinary.uploader.destroy(product.mainImage.public_id);
-  req.body.mainImage = {secure_url,public_id} ; 
-  
-}
-
- 
-if(req.files.subImages?.subImages){
-    req.body.subImages=[];
+  if (req.files?.subImages) {
+    req.body.subImages = [];
     for (const file of req.files.subImages) {
-  const {secure_url,public_id} = await cloudinary.uploader.upload(file.path,{folder:`/${process.env.APP_NAME}/Category/SubCategory/Products/${product.customId.customId}`})
-   await cloudinary.uploader.destroy(product.subImages.public_id);
+      const { secure_url, public_id } = await cloudinary.uploader.upload(
+        file.path,
+        {
+          folder: `/${process.env.APP_NAME}/Category/SubCategory/Products/${product.customId.customId}`,
+        }
+      );
+      await cloudinary.uploader.destroy(product.subImages.public_id);
 
-        req.body.subImages.push({secure_url,public_id})
-    } 
-}
+      req.body.subImages.push({ secure_url, public_id });
+    }
+    return next();
+  }
+  if (data.stock) {
+   product.stock= req.body.stock 
+    console.log(req.body.stock);
+  }
+  req.body.updatedBy = req.user._id;
 
-req.body.updatedBy = req.user._id;
-await productModel.updateOne({_id:product._id},req.body)
-const newProduct = await productModel.create(req.body);
-if(!newProduct){ 
+  const newProduct = await productModel.findOneAndUpdate(
+    { _id: product._id },
+    req.body,
+    { new: true }
+  );
+
+  if (!newProduct) {
     return next(new Error("fail to create product"), { cause: 400 });
-}
-return res.json({newProduct})
-
-})
+  }
+  await product.save();
+  return res.json({ newProduct });
+});
